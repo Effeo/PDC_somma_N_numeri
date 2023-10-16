@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#PBS -q studenti
+#PBS -l nodes=8
+#PBS -N Test
+#PBS -o Test.out
+#PBS -e Test.err
+
+#####################
+# -q coda su cui va l'eseguibile. Sempre studenti
+# -l numero di nodi richiesti
+# -N nome job (stesso nome del PBS)
+# -o, -e nome files contentente l'output
+
+###########
+#
+# Info Random del Job
+#
+###########
+
+NCPU=8
+
+echo --------------------------
+echo 'This job is allocated on '${NCPU}' cpu(s)'
+echo 'Job is running on node(s):'
+cat $PBS_NODEFILE
+
+PBS_O_WORKDIR=$PBS_O_HOME/EsercizioSommaInteri
+
+echo "Eseguo la compilazione: "
+/usr/lib64/openmpi/1.4-gcc/bin/mpicc -o $PBS_O_WORKDIR/test $PBS_O_WORKDIR/main.c
+
+echo "Eseguo il codice: "
+/usr/lib64/openmpi/1.4-gcc/bin/mpiexec -machinefile $PBS_NODEFILE -np $NCPU $PBS_O_WORKDIR/test 11 1 1 1 1 1 1 1 1 1 1 1
+echo --------------------------
