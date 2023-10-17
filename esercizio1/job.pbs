@@ -31,5 +31,5 @@ echo "Eseguo la compilazione: "
 /usr/lib64/openmpi/1.4-gcc/bin/mpicc -o $PBS_O_WORKDIR/test $PBS_O_WORKDIR/main.c
 
 echo "Eseguo il codice: "
-/usr/lib64/openmpi/1.4-gcc/bin/mpiexec -machinefile $PBS_NODEFILE -np $NCPU $PBS_O_WORKDIR/test 11 1 1 1 1 1 1 1 1 1 1 1
+/usr/lib64/openmpi/1.4-gcc/bin/mpiexec -machinefile $PBS_NODEFILE -np $NCPU $PBS_O_WORKDIR/test 2 11 1 1 1 1 1 1 1 1 1 1 1
 echo --------------------------
