@@ -272,10 +272,6 @@ int stretegyOne(int argc, char *argv[])
       MPI_Recv(&value, 1, MPI_INT, i, i, MPI_COMM_WORLD, &status);
       sum += value;
     }
-
-    printf("Result: %d\n", sum);
-    MPI_Finalize();
-    return sum;
   }
   else // Calculators
   {
