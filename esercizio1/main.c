@@ -7,8 +7,11 @@ int stretegyTwo(int argc, char *argv[])
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
-
+  int i;
   int menum, nProcessors;
+  int sum = 0;
+  double t0, t1, time;
+  double timetot;
 
   MPI_Init(&argc, &argv);
 
@@ -22,24 +25,42 @@ int stretegyTwo(int argc, char *argv[])
     return stretegyOne(argc, argv);
   }
 
-  int fractions = nOfNumbers / nProcessors;
+  int rest = nOfNumbers % nProcessors;
+
+  MPI_Barrier(MPI_COMM_WORLD);
+  t0 = MPI_Wtime();
+
+  if (rest != 0)
+  {
+      for(i = 0; i < rest; ++i)
+      {
+        if(menum == i)
+        {
+          if(nOfNumbers <= 20)
+            sum += atoi(argv[startIndex + i]);
+          else
+            sum += (rand() % 100);
+        }
+      }
+
+      startIndex += rest;
+  }
+
+  int fractions = (nOfNumbers - rest) / nProcessors;
+
 
   int min = menum * fractions;
   int max = min + fractions;
 
-  int sum = 0;
   int value = 0;
   int currentLevel = 1;
-  int i;
 
-  if(menum == 0)
-  {
-      max =  max + nOfNumbers % nProcessors;
-  }
-  
   for (i = min; i < max; ++i)
   {
-    sum += atoi(argv[startIndex + i]);
+    if(nOfNumbers <= 20)
+      sum += atoi(argv[startIndex + i]);
+    else
+      sum += (rand() % 100);
   }
 
   MPI_Status status;
@@ -67,13 +88,19 @@ int stretegyTwo(int argc, char *argv[])
     }
   }
 
-  MPI_Finalize();
+  t1 = MPI_Wtime();
+  time = t1 - t0;
+  printf("Sono %d: tempo impiegato: %e secondi\n", menum, time);
+  MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
   if(menum == 0){
+    printf("Tempo totale impiegato: %e secondi\n", timetot);
     printf("Result: %d\n", sum);
+    MPI_Finalize();
     return sum;
   }
-
+  
+  MPI_Finalize();
   return 0;
 }
 
@@ -81,8 +108,11 @@ int strategyThree(int argc, char *argv[])
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
-
+  int sum = 0;
+  int i;
   int menum, nProcessors;
+  double t0, t1, time;
+  double timetot;
 
   MPI_Init(&argc, &argv);
 
@@ -96,52 +126,59 @@ int strategyThree(int argc, char *argv[])
     return stretegyOne(argc, argv);
   }
 
-  int fractions = nOfNumbers / nProcessors;
+  int rest = nOfNumbers % nProcessors;
+
+  MPI_Barrier(MPI_COMM_WORLD);
+  t0 = MPI_Wtime();
+
+  if (rest != 0)
+  {
+      for(i = 0; i < rest; ++i)
+      {
+        if(menum == i)
+        {
+          if(nOfNumbers <= 20)
+            sum += atoi(argv[startIndex + i]);
+          else
+            sum += (rand() % 100);
+        }
+      }
+
+      startIndex += rest;
+  }
+
+  int fractions = (nOfNumbers - rest) / nProcessors;
 
   int min = menum * fractions;
   int max = min + fractions;
 
-  int sum = 0;
   int value = 0;
   int currentLevel = 1;
-  int i;
-
-  if(menum == 0)
-  {
-      max =  max + nOfNumbers % nProcessors;
-  }
   
   for (i = min; i < max; ++i)
   {
-    sum += atoi(argv[startIndex + i]);
+    if(nOfNumbers <= 20)
+      sum += atoi(argv[startIndex + i]);
+    else
+      sum += (rand() % 100);
   }
 
   MPI_Status status;
-  int levels = nProcessors / 2;
+  int levels = (int)(log(nProcessors) / log(2));
   int scarto;
   int verso;
   int salto;
  
-  for(currentLevel = 1; currentLevel < levels; ++currentLevel)
+  for(currentLevel = 1; currentLevel <= levels; ++currentLevel)
   {
     scarto = (int)pow(2, currentLevel - 1);
-    verso = (menum / scarto);
+    verso = ((int)pow(2, currentLevel) / 2);
 
-    if(verso % 2 == 0)
-    {
-      salto = menum + scarto;
-    }
-    else
-    {
-      salto = menum - scarto;
-    }
-
-    if(menum % 2 == 0){
+    if((menum / scarto) % 2 == 0){
       //Send recive
+      salto = menum + scarto;
 
-      printf("Send recive: proc %d sending to %d\n", menum, salto);
       MPI_Send(&sum, 1, MPI_INT, salto, 0, MPI_COMM_WORLD);
-      printf("Inviato\n")
       MPI_Recv(&value, 1, MPI_INT, salto, 0, MPI_COMM_WORLD, &status);
 
       sum += value;
@@ -149,9 +186,9 @@ int strategyThree(int argc, char *argv[])
     else 
     {
       //recive send
-      printf("Recive send: proc %d sending to %d\n", menum, salto);
+      salto = menum - scarto;
+
       MPI_Recv(&value, 1, MPI_INT, salto, 0, MPI_COMM_WORLD, &status);
-      printf("Ricevuto\n")
       MPI_Send(&sum, 1, MPI_INT, salto, 0, MPI_COMM_WORLD);
 
       sum += value;
@@ -159,49 +196,79 @@ int strategyThree(int argc, char *argv[])
   }
 
 
+  t1 = MPI_Wtime();
+  time = t1 - t0;
+  printf("Sono %d: tempo impiegato: %e secondi\n", menum, time);
+  MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
+  if(menum == 0){
+    printf("Tempo totale impiegato: %e secondi\n", timetot);
+    printf("Result: %d\n", sum);
+    MPI_Finalize();
+    return sum;
+  }
+  
   MPI_Finalize();
-  printf("Result: %d\n", sum);
-  return sum;
+  return 0;
 }
 
 int stretegyOne(int argc, char *argv[])
 {
-  // startIndex starts from 2 because we skip the first two args (command name and strategyid)
   int startIndex = 2;
-
-  // We take the number of numbers to sum from array index 2, then increase startIndex
-  // just to have the right offset for the next loc
   int nOfNumbers = atoi(argv[startIndex++]);
-
+  
   int menum, nproc;
+  int sum = 0;
+  int i = 0;
+  int value;
+  double t0, t1, time;
+  double timetot;
+
   MPI_Init(&argc, &argv);
 
   MPI_Comm_rank(MPI_COMM_WORLD, &menum);
   MPI_Comm_size(MPI_COMM_WORLD, &nproc);
 
-  int fractions = nOfNumbers / nproc;
+  int rest = nOfNumbers % nproc;
+
+  MPI_Barrier(MPI_COMM_WORLD);
+  t0 = MPI_Wtime();
+
+  if (rest != 0)
+  {
+      for(i = 0; i < rest; ++i)
+      {
+        if(menum == i)
+        {
+          if(nOfNumbers <= 20)
+            sum += atoi(argv[startIndex + i]);
+          else
+            sum += (rand() % 100);
+        }
+      }
+
+      startIndex += rest;
+  }
+
+  int fractions = (nOfNumbers - rest) / nproc;
 
   int min = menum * fractions;
   int max = min + fractions;
-  int i = 0;
-  
-  // Controller
+
   if (menum == 0)
   {
     MPI_Status status;
 
-    int sum = 0;
-    int mmax = max + nOfNumbers % nproc;
-
-    for (i = min; i < mmax; ++i)
+    for (i = min; i < max; ++i)
     {
-      sum += atoi(argv[startIndex + i]);
+      if(nOfNumbers <= 20)
+        sum += atoi(argv[startIndex + i]);
+      else
+        sum += (rand() % 100);
     }
 
     for (i = 1; i < nproc; ++i)
     {
-      int value = 0;
-
       MPI_Recv(&value, 1, MPI_INT, i, i, MPI_COMM_WORLD, &status);
       sum += value;
     }
@@ -212,18 +279,31 @@ int stretegyOne(int argc, char *argv[])
   }
   else // Calculators
   {
-    int sum = 0;
 
     for (i = min; i < max; ++i)
     {
-      sum += atoi(argv[startIndex + i]);
+      if(nOfNumbers <= 20)
+        sum += atoi(argv[startIndex + i]);
+      else
+        sum += (rand() % 100);
     }
 
     MPI_Send(&sum, 1, MPI_INT, 0, menum, MPI_COMM_WORLD);
   }
 
-  MPI_Finalize();
+  t1 = MPI_Wtime();
+  time = t1 - t0;
+  printf("Sono %d: tempo impiegato: %e secondi\n", menum, time);
+  MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
+  if(menum == 0){
+    printf("Tempo totale impiegato: %e secondi\n", timetot);
+    printf("Result: %d\n", sum);
+    MPI_Finalize();
+    return sum;
+  }
+  
+  MPI_Finalize();
   return 0;
 }
 
