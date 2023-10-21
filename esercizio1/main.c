@@ -1,29 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include "mpi.h"
 
-int stretegyTwo(int argc, char *argv[], int  *numbers)
+int stretegyTwo(int argc, char *argv[], int  *numbers,int menum,int nProcessors)
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
   int i;
-  int menum, nProcessors;
   int sum = 0;
   double t0, t1, time;
   double timetot;
-
-  MPI_Init(&argc, &argv);
-
-  MPI_Comm_rank(MPI_COMM_WORLD, &menum);
-  MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
-
-  // If it's not a power of two, return -1
-  if (nProcessors & (nProcessors - 1) != 0)
-  {
-    MPI_Finalize();
-    return stretegyOne(argc, argv, numbers);
-  }
 
   int rest = nOfNumbers % nProcessors;
 
@@ -104,27 +92,14 @@ int stretegyTwo(int argc, char *argv[], int  *numbers)
   return 0;
 }
 
-int strategyThree(int argc, char *argv[], int  *numbers)
+int strategyThree(int argc, char *argv[], int  *numbers,int menum, int nProcessors)
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
   int sum = 0;
   int i;
-  int menum, nProcessors;
   double t0, t1, time;
   double timetot;
-
-  MPI_Init(&argc, &argv);
-
-  MPI_Comm_rank(MPI_COMM_WORLD, &menum);
-  MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
-
-  // If it's not a power of two, return -1
-  if (nProcessors & (nProcessors - 1) != 0)
-  {
-    MPI_Finalize();
-    return stretegyOne(argc, argv, numbers);
-  }
 
   int rest = nOfNumbers % nProcessors;
 
@@ -166,7 +141,6 @@ int strategyThree(int argc, char *argv[], int  *numbers)
   MPI_Status status;
   int levels = (int)(log(nProcessors) / log(2));
   int scarto;
-  int verso;
   int salto;
  
   for(currentLevel = 1; currentLevel <= levels; ++currentLevel)
@@ -211,22 +185,17 @@ int strategyThree(int argc, char *argv[], int  *numbers)
   return sum;
 }
 
-int stretegyOne(int argc, char *argv[], int  *numbers)
+int stretegyOne(int argc, char *argv[], int  *numbers,int menum, int nproc)
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
   
-  int menum, nproc;
   int sum = 0;
   int i = 0;
   int value;
   double t0, t1, time;
   double timetot;
 
-  MPI_Init(&argc, &argv);
-
-  MPI_Comm_rank(MPI_COMM_WORLD, &menum);
-  MPI_Comm_size(MPI_COMM_WORLD, &nproc);
 
   int rest = nOfNumbers % nproc;
 
@@ -305,6 +274,12 @@ int stretegyOne(int argc, char *argv[], int  *numbers)
 
 int main(int argc, char *argv[])
 {
+  int menum, nProcessors;
+
+ MPI_Init(&argc, &argv);
+
+  MPI_Comm_rank(MPI_COMM_WORLD, &menum);
+  MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
   int strategyNumber = atoi(argv[1]);
   int nOfNumbers = atoi(argv[2]);
   int result;
@@ -327,11 +302,22 @@ int main(int argc, char *argv[])
   }
   else if (strategyNumber == 2)
   {
-    result = stretegyTwo(argc, argv, numbers);
+    if (nProcessors & (nProcessors - 1) != 0){
+      result = stretegyOne(argc,argv,numbers,menum,nProcessors);
+    }
+    else{
+      result = stretegyTwo(argc, argv, numbers,menum,nProcessors);
+    }
+    
   }
   else if (strategyNumber == 3)
   {
-    result = strategyThree(argc, argv, numbers);
+    if (nProcessors & (nProcessors - 1) != 0){
+      result = stretegyOne(argc,argv,numbers,menum,nProcessors);
+    }
+    else{
+      result = stretegyThree(argc, argv, numbers,menum,nProcessors);
+    }
   }
   else
   {
