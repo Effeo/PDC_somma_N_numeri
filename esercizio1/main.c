@@ -146,7 +146,6 @@ int strategyThree(int argc, char *argv[], int  *numbers,int menum, int nProcesso
   for(currentLevel = 1; currentLevel <= levels; ++currentLevel)
   {
     scarto = (int)pow(2, currentLevel - 1);
-    verso = ((int)pow(2, currentLevel) / 2);
 
     if((menum / scarto) % 2 == 0){
       //Send recive
