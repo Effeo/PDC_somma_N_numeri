@@ -22,7 +22,7 @@ int stretegyTwo(int argc, char *argv[], int  *numbers)
   if (nProcessors & (nProcessors - 1) != 0)
   {
     MPI_Finalize();
-    return stretegyOne(argc, argv);
+    return stretegyOne(argc, argv, numbers);
   }
 
   int rest = nOfNumbers % nProcessors;
@@ -123,7 +123,7 @@ int strategyThree(int argc, char *argv[], int  *numbers)
   if (nProcessors & (nProcessors - 1) != 0)
   {
     MPI_Finalize();
-    return stretegyOne(argc, argv);
+    return stretegyOne(argc, argv, numbers);
   }
 
   int rest = nOfNumbers % nProcessors;
