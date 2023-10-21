@@ -3,7 +3,7 @@
 
 #include "mpi.h"
 
-int stretegyTwo(int argc, char *argv[])
+int stretegyTwo(int argc, char *argv[], int  *numbers)
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
@@ -39,7 +39,7 @@ int stretegyTwo(int argc, char *argv[])
           if(nOfNumbers <= 20)
             sum += atoi(argv[startIndex + i]);
           else
-            sum += (rand() % 100);
+            sum += numbers[i];
         }
       }
 
@@ -60,7 +60,7 @@ int stretegyTwo(int argc, char *argv[])
     if(nOfNumbers <= 20)
       sum += atoi(argv[startIndex + i]);
     else
-      sum += (rand() % 100);
+      sum += numbers[i];
   }
 
   MPI_Status status;
@@ -104,7 +104,7 @@ int stretegyTwo(int argc, char *argv[])
   return 0;
 }
 
-int strategyThree(int argc, char *argv[])
+int strategyThree(int argc, char *argv[], int  *numbers)
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
@@ -140,7 +140,7 @@ int strategyThree(int argc, char *argv[])
           if(nOfNumbers <= 20)
             sum += atoi(argv[startIndex + i]);
           else
-            sum += (rand() % 100);
+            sum += numbers[i];
         }
       }
 
@@ -160,7 +160,7 @@ int strategyThree(int argc, char *argv[])
     if(nOfNumbers <= 20)
       sum += atoi(argv[startIndex + i]);
     else
-      sum += (rand() % 100);
+      sum += numbers[i];
   }
 
   MPI_Status status;
@@ -200,19 +200,18 @@ int strategyThree(int argc, char *argv[])
   time = t1 - t0;
   printf("Sono %d: tempo impiegato: %e secondi\n", menum, time);
   MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-
+  
   if(menum == 0){
     printf("Tempo totale impiegato: %e secondi\n", timetot);
-    printf("Result: %d\n", sum);
-    MPI_Finalize();
-    return sum;
   }
   
+  printf("Result: %d\n", sum);
   MPI_Finalize();
-  return 0;
+
+  return sum;
 }
 
-int stretegyOne(int argc, char *argv[])
+int stretegyOne(int argc, char *argv[], int  *numbers)
 {
   int startIndex = 2;
   int nOfNumbers = atoi(argv[startIndex++]);
@@ -243,7 +242,7 @@ int stretegyOne(int argc, char *argv[])
           if(nOfNumbers <= 20)
             sum += atoi(argv[startIndex + i]);
           else
-            sum += (rand() % 100);
+            sum += numbers[i];
         }
       }
 
@@ -264,7 +263,7 @@ int stretegyOne(int argc, char *argv[])
       if(nOfNumbers <= 20)
         sum += atoi(argv[startIndex + i]);
       else
-        sum += (rand() % 100);
+        sum += numbers[i];
     }
 
     for (i = 1; i < nproc; ++i)
@@ -281,7 +280,7 @@ int stretegyOne(int argc, char *argv[])
       if(nOfNumbers <= 20)
         sum += atoi(argv[startIndex + i]);
       else
-        sum += (rand() % 100);
+        sum += numbers[i];
     }
 
     MPI_Send(&sum, 1, MPI_INT, 0, menum, MPI_COMM_WORLD);
@@ -291,14 +290,15 @@ int stretegyOne(int argc, char *argv[])
   time = t1 - t0;
   printf("Sono %d: tempo impiegato: %e secondi\n", menum, time);
   MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-
+  
+  
   if(menum == 0){
     printf("Tempo totale impiegato: %e secondi\n", timetot);
     printf("Result: %d\n", sum);
     MPI_Finalize();
     return sum;
   }
-  
+
   MPI_Finalize();
   return 0;
 }
@@ -306,19 +306,32 @@ int stretegyOne(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
   int strategyNumber = atoi(argv[1]);
+  int nOfNumbers = atoi(argv[2]);
   int result;
+  int *numbers = NULL;
+  int i;
+
+  if (nOfNumbers > 20)
+  {
+    numbers = malloc(nOfNumbers * sizeof(int));
+
+    for (i = 0; i < nOfNumbers; ++i) 
+    {
+      numbers[i] = rand() % 100;
+    }
+  }
 
   if (strategyNumber == 1)
   {
-    result = stretegyOne(argc, argv);
+    result = stretegyOne(argc, argv, numbers);
   }
   else if (strategyNumber == 2)
   {
-    result = stretegyTwo(argc, argv);
+    result = stretegyTwo(argc, argv, numbers);
   }
   else if (strategyNumber == 3)
   {
-    result = strategyThree(argc, argv);
+    result = strategyThree(argc, argv, numbers);
   }
   else
   {
