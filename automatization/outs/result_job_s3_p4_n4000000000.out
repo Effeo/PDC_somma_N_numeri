@@ -1,0 +1,19 @@
+--------------------------
+This job is allocated on 4 cpu(s)
+Job is running on node(s):
+wn279.scope.unina.it
+wn279.scope.unina.it
+wn279.scope.unina.it
+wn275.scope.unina.it
+Eseguo la compilazione: 
+Eseguo il codice: 
+Sono 0: tempo impiegato: 7.605553e-05 secondi
+Sono 2: tempo impiegato: 9.202957e-05 secondi
+Result: 0
+Sono 3: tempo impiegato: 8.893013e-05 secondi
+Sono 1: tempo impiegato: 7.081032e-05 secondi
+Result: 0
+Tempo totale impiegato: 9.202957e-05 secondi
+Result: 0
+Result: 0
+--------------------------

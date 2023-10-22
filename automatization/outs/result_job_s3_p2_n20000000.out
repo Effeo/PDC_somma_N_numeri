@@ -1,0 +1,13 @@
+--------------------------
+This job is allocated on 2 cpu(s)
+Job is running on node(s):
+wn276.scope.unina.it
+wn276.scope.unina.it
+Eseguo la compilazione: 
+Eseguo il codice: 
+Sono 1: tempo impiegato: 4.427505e-02 secondi
+Result: 990134649
+Sono 0: tempo impiegato: 4.429483e-02 secondi
+Tempo totale impiegato: 4.429483e-02 secondi
+Result: 990134649
+--------------------------

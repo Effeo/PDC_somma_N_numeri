@@ -1,0 +1,18 @@
+--------------------------
+This job is allocated on 5 cpu(s)
+Job is running on node(s):
+wn275.scope.unina.it
+wn274.scope.unina.it
+wn274.scope.unina.it
+wn274.scope.unina.it
+wn274.scope.unina.it
+Eseguo la compilazione: 
+Eseguo il codice: 
+Sono 3: tempo impiegato: 8.903980e-03 secondi
+Sono 1: tempo impiegato: 8.895159e-03 secondi
+Sono 2: tempo impiegato: 9.115934e-03 secondi
+Sono 4: tempo impiegato: 9.227037e-03 secondi
+Sono 0: tempo impiegato: 1.022911e-02 secondi
+Tempo totale impiegato: 1.022911e-02 secondi
+Result: 495063154
+--------------------------
