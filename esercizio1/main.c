@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 
   if (strategyNumber == 1)
   {
-    result = stretegyOne(argc, argv, numbers);
+    result = stretegyOne(argc, argv, numbers,menum,nProcessors);
   }
   else if (strategyNumber == 2)
   {
@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
       result = stretegyOne(argc,argv,numbers,menum,nProcessors);
     }
     else{
-      result = stretegyThree(argc, argv, numbers,menum,nProcessors);
+      result = strategyThree(argc, argv, numbers,menum,nProcessors);
     }
   }
   else
