@@ -6,7 +6,7 @@
 #PBS -l nodes=1:ppn=8
 #PBS -N job
 
-PBS_WORKDIR=$PBS_O_HOME/sum
+PBS_WORKDIR=$PBS_O_HOME/esercizi_griglia
 
 
 echo PBS: qsub is running on $PBS_O_HOST
@@ -23,9 +23,9 @@ echo PBS: PATH = $PBS_O_PATH
 echo -----------------------------------
 
 echo exec, input, expected, result, time,
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -o $PBS_WORKDIR/esercizi_griglia 
+gcc $PBS_WORKDIR/mainEserciziGriglia.c -lgomp -fopenmp -o $PBS_WORKDIR/mainEserciziGriglia 
 
 input=10000000
 export OMP_NUM_THREAD=4
 
-$PBS_WORKDIR/esercizi_griglia $input
+$PBS_WORKDIR/mainEserciziGriglia $input
