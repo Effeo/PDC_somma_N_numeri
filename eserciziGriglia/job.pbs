@@ -22,10 +22,11 @@ echo PBS: PATH = $PBS_O_PATH
 
 echo -----------------------------------
 
+NCPU=8
+
 echo exec, input, expected, result, time,
-gcc $PBS_WORKDIR/mainEserciziGriglia.c -lgomp -fopenmp -o $PBS_WORKDIR/mainEserciziGriglia 
+/usr/lib64/openmpi/1.4-gcc/bin/mpicc $PBS_WORKDIR/mainEserciziGriglia.c -lgomp -fopenmp -o $PBS_WORKDIR/main 
 
 input=10000000
 export OMP_NUM_THREAD=4
-
-$PBS_WORKDIR/mainEserciziGriglia $input
+/usr/lib64/openmpi/1.4-gcc/bin/mpiexec -machinefile $PBS_NODEFILE -np $NCPU $PBS_O_WORKDIR/main 1111

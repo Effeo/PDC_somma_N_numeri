@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "mpi.h"
 
-int mainEserciziGriglia(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
     int menum, nproc, row, col, menum_grid;
     int dim, *ndim, reorder, *period, *coordinate;
     MPI_Comm comm_grid;
@@ -38,7 +38,7 @@ int mainEserciziGriglia(int argc, char* argv[]){
     // definizione della griglia bidimensionale
     MPI_Cart_create(MPI_COMM_WORLD, dim, ndim, period, reorder, &comm_grid);
     // nella slide c'è scritto &menum_grid, ma non è definito
-    MPI_Cpmm_rank(comm_grid, &menum);
+    MPI_Comm_rank(comm_grid, &menum);
 
     // definizione delle coordinate di ciascun processo nella griglia bidimensionale
     MPI_Cart_coords(comm_grid, menum, dim, coordinate);
