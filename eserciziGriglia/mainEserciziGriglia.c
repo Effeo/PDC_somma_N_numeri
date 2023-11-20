@@ -49,7 +49,7 @@ void esercizio1(int argc, char* argv[]){
     MPI_Finalize();
 }
 
-void esercizio2(int argc, char* argv){
+void esercizio2(int argc, char* argv[]){
     int menum, nproc, row, col, menum_grid;
     int dim, *ndim, reorder, *period, *coordinate;
     int i;
