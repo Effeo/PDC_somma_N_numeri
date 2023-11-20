@@ -29,4 +29,4 @@ echo exec, input, expected, result, time,
 
 input=10000000
 export OMP_NUM_THREAD=4
-/usr/lib64/openmpi/1.4-gcc/bin/mpiexec -machinefile $PBS_NODEFILE -np $NCPU $PBS_O_WORKDIR/main 1111
+/usr/lib64/openmpi/1.4-gcc/bin/mpiexec -machinefile $PBS_NODEFILE -np $NCPU $PBS_O_WORKDIR/main 2 10 0 1 2 3 4 5 6 7 8 9
