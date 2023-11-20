@@ -126,7 +126,7 @@ void esercizio2(int argc, char* argv){
 }
 
 int main(int argc, char* argv[]) {
-    esercizio1(argc, argv);
-
+    //esercizio1(argc, argv);
+    esercizio2(argc, argv);
     return 0;
 }
