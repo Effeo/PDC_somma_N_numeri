@@ -5,65 +5,71 @@
 
 int main(int argc, char *argv[])
 {
-    int dimVet = atoi(argv[1]);
-    int righeMat = atoi(argv[2]);
-    int colMat = atoi(argv[3]);
+    int dimVetInput = atoi(argv[1]);
+    int righeMatInput = atoi(argv[2]);
+    int colMatInput = atoi(argv[3]);
     int i, j;
 
-    int** mat = (int**) malloc(righeMat * sizeof(int*));
-    int* vettore = (int*) malloc(dimVet * sizeof(int));
+    int** matInput = (int**) malloc(righeMatInput * sizeof(int*));
+    int* vetInput = (int*) malloc(dimVetInput * sizeof(int));
 
-    for (i = 0; i < righeMat; i++){
-        mat[i] = (int*) malloc(colMat * sizeof(int));
+    for (i = 0; i < righeMatInput; i++){
+        matInput[i] = (int*) malloc(colMatInput * sizeof(int));
     }
 
-    for(i = 0; i < righeMat; i++){
-        for(j = 0; j < colMat; j++){
-            mat[i][j] = atoi(argv[4 + i * colMat + j]);
+    for(i = 0; i < righeMatInput; i++){
+        for(j = 0; j < colMatInput; j++){
+            matInput[i][j] = atoi(argv[4 + i * colMatInput + j]);
         }
     }
 
-    for(i = 0; i < dimVet; i++){
-        vettore[i] = atoi(argv[4 + righeMat * colMat + i]);
+    for(i = 0; i < dimVetInput; i++){
+        vetInput[i] = atoi(argv[4 + righeMatInput * colMatInput + i]);
     }
 
-    int** resultMat = (int**) malloc(righeMat * sizeof(int*));
-    for (i = 0; i < colMat; i++){
-        resultMat[i] = (int*) malloc(omp_get_num_threads() * sizeof(int));
+    int** matProdotto = (int**) malloc(righeMatInput * sizeof(int*));
+    for (i = 0; i < righeMatInput; i++){
+        matProdotto[i] = (int*) malloc(omp_get_max_threads() * sizeof(int));
     }
-    printf("num_threads: %d\n", omp_get_num_threads());
-    
-    #pragma omp parallel for shared(resultMat, mat, vettore, colMat, righeMat) private(i, j) num_threads(omp_get_num_threads())
-    for(j = 0; j < colMat; ++j){
-         printf("num_threads 2: %d\n", omp_get_num_threads());
-        for(i = 0; i < righeMat; ++i){
-            resultMat[i][omp_get_thread_num()] = mat[i][j] * vettore[j];
+
+    int k;
+    int tempProdotto = 0;
+    #pragma omp parallel for shared(matProdotto, matInput, vetInput, righeMatInput, colMatInput) private(i, j, k, tempProdotto)
+    for(j = 0; j < colMatInput; ++j){
+        for(i = 0; i < righeMatInput; ++i){
+            for(k = 0; k < colMatInput; ++k){
+                tempProdotto += matInput[i][k] * vetInput[k];
+            }
+            
+            matProdotto[j][omp_get_thread_num()] = tempProdotto;
         }
     }
-    printf("num_threads 2: %d\n", omp_get_num_threads());
 
-    printf("matrice risultato:\n");
-    for(i = 0; i < righeMat; i++){
-        for(j = 0; j < omp_get_num_threads(); j++){
-            printf("(%d, %d): %d ", i, j, resultMat[i][j]);
+    /*printf("matrice risultato:\n");
+    for(i = 0; i < righeMatInput; i++){
+        for(j = 0; j < omp_get_max_threads(); j++){
+            printf("%d ", matProdotto[i][j]);
         }
         printf("\n");
     }
+    printf("\n");*/
 
-    int* resVec =  (int*) calloc(righeMat, sizeof(int));
-    
+    int* vetSomme =  (int*) calloc(righeMatInput, sizeof(int)); 
     #pragma omp parallel for
-    for(i = 0; i < righeMat; i++){
+    for(i = 0; i < righeMatInput; i++){
         for(j = 0; j < omp_get_num_threads(); j++){
-            resVec[i] += resultMat[i][j];
+            printf("Mat[%d, %d] thread %d: %d\n", i, j, omp_get_thread_num(), matProdotto[i][j]);
+            vetSomme[i] += matProdotto[i][j];
+            printf("VetSomme[%d] thread %d: %d\n", i, omp_get_thread_num(), vetSomme[i]);
         }
+        printf("VetSommeFinale[%d] thread %d: %d\n", i, omp_get_thread_num(), vetSomme[i]);
     }
     
-    /*
-    printf("vettore risultato:\n");
-    for(i = 0; i < righeMat; i++){
-        printf("%d\n", resVec[i]);
-    }
-    */
+    
+    /*printf("risultato:\n");
+    for(i = 0; i < righeMatInput; i++){
+        printf("%d\n", vetSomme[i]);
+    }*/
+    
     return EXIT_SUCCESS;
 }
