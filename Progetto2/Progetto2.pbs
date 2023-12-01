@@ -8,7 +8,6 @@
 
 PBS_WORKDIR=$PBS_O_HOME/Progetto2
 
-
 echo PBS: qsub is running on $PBS_O_HOST
 echo PBS: originating queue is $PBS_O_QUEUE
 echo PBS: executing queue is $PBS_QUEUE
@@ -23,10 +22,10 @@ echo PBS: PATH = $PBS_O_PATH
 echo -----------------------------------
 
 echo exec, input, expected, result, time,
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -o $PBS_WORKDIR/Progetto2 
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -O1 -o $PBS_WORKDIR/Progetto2_o1
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -O2 -o $PBS_WORKDIR/Progetto2_o2 
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -O3 -o $PBS_WORKDIR/Progetto2_o3
+gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -o $PBS_WORKDIR/Progetto2 
+gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O1 -o $PBS_WORKDIR/Progetto2_o1
+gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O2 -o $PBS_WORKDIR/Progetto2_o2 
+gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O3 -o $PBS_WORKDIR/Progetto2_o3
 
 input=3 3 3 1 2 3 4 5 6 7 8 9 1 1 1
 export OMP_NUM_THREADS=4
