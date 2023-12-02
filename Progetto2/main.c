@@ -6,9 +6,9 @@
 
 int strategy1(char *argv[])
 {
-  int dimVet = atoi(argv[1]);
-  int righeMat = atoi(argv[2]);
-  int colMat = atoi(argv[3]);
+  int dimVet = atoi(argv[0]);
+  int righeMat = atoi(argv[1]);
+  int colMat = atoi(argv[2]);
   
   int i, j;
 
@@ -24,13 +24,13 @@ int strategy1(char *argv[])
   {
     for (j = 0; j < colMat; j++)
     {
-      mat[i][j] = atoi(argv[4 + i * colMat + j]);
+      mat[i][j] = atoi(argv[3 + i * colMat + j]);
     }
   }
 
   for (i = 0; i < dimVet; i++)
   {
-    vettore[i] = atoi(argv[4 + righeMat * colMat + i]);
+    vettore[i] = atoi(argv[3 + righeMat * colMat + i]);
   }
 
   int *resVec = (int *)calloc(colMat, sizeof(int));
@@ -60,9 +60,9 @@ int strategy1(char *argv[])
 
 int strategy2(char *argv[])
 {
-  int dimVetInput = atoi(argv[1]);
-  int righeMatInput = atoi(argv[2]);
-  int colMatInput = atoi(argv[3]);
+  int dimVetInput = atoi(argv[0]);
+  int righeMatInput = atoi(argv[1]);
+  int colMatInput = atoi(argv[2]);
   int i, j;
 
   int **matInput = (int **)malloc(righeMatInput * sizeof(int *));
@@ -78,13 +78,13 @@ int strategy2(char *argv[])
   {
     for (j = 0; j < colMatInput; j++)
     {
-      matInput[i][j] = atoi(argv[4 + i * colMatInput + j]);
+      matInput[i][j] = atoi(argv[3 + i * colMatInput + j]);
     }
   }
 
   for (i = 0; i < dimVetInput; i++)
   {
-    vetInput[i] = atoi(argv[4 + righeMatInput * colMatInput + i]);
+    vetInput[i] = atoi(argv[3 + righeMatInput * colMatInput + i]);
   }
 
 #pragma omp parallel for shared(matInput, vetInput, righeMatInput, colMatInput) private(i, j)
@@ -130,9 +130,9 @@ int strategy2(char *argv[])
 
 int strategy3(char *argv[])
 {
-  int dimVetInput = atoi(argv[1]);
-  int righeMatInput = atoi(argv[2]);
-  int colMatInput = atoi(argv[3]);
+  int dimVetInput = atoi(argv[0]);
+  int righeMatInput = atoi(argv[1]);
+  int colMatInput = atoi(argv[2]);
   int i, j;
 
   int **matInput = (int **)malloc(righeMatInput * sizeof(int *));
@@ -148,13 +148,13 @@ int strategy3(char *argv[])
   {
     for (j = 0; j < colMatInput; j++)
     {
-      matInput[i][j] = atoi(argv[4 + i * colMatInput + j]);
+      matInput[i][j] = atoi(argv[3 + i * colMatInput + j]);
     }
   }
 
   for (i = 0; i < dimVetInput; i++)
   {
-    vetInput[i] = atoi(argv[4 + righeMatInput * colMatInput + i]);
+    vetInput[i] = atoi(argv[3 + righeMatInput * colMatInput + i]);
   }
 
   int numThreads = omp_get_max_threads();
@@ -214,15 +214,15 @@ int main(int argc, char *argv[])
 
   if (strategyIndex == 0)
   {
-    return strategy1(argv + 1);
+    return strategy1(argv + 2); // + 2 means we skip command name and strategyIndex
   }
   else if (strategyIndex == 2)
   {
-    return strategy2(argv + 1);
+    return strategy2(argv + 2); // + 2 means we skip command name and strategyIndex
   }
   else if (strategyIndex == 2)
   {
-    return strategy3(argv + 1);
+    return strategy3(argv + 2); // + 2 means we skip command name and strategyIndex
   }
   return EXIT_FAILURE;
 }
