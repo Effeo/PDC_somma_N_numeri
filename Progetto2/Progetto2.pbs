@@ -23,24 +23,23 @@ echo -----------------------------------
 
 echo exec, input, expected, result, time,
 gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -o $PBS_WORKDIR/Progetto2 
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O1 -o $PBS_WORKDIR/Progetto2_o1
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O2 -o $PBS_WORKDIR/Progetto2_o2 
-gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O3 -o $PBS_WORKDIR/Progetto2_o3
+# gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O1 -o $PBS_WORKDIR/Progetto2_o1
+# gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O2 -o $PBS_WORKDIR/Progetto2_o2 
+# gcc $PBS_WORKDIR/main.c -lgomp -fopenmp -lm -O3 -o $PBS_WORKDIR/Progetto2_o3
 
-input=3 3 3 1 2 3 4 5 6 7 8 9 1 1 1
 export OMP_NUM_THREADS=4
 
 $PBS_WORKDIR/Progetto2 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o1 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o2 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o3 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o1 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o2 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o3 0 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
 
 $PBS_WORKDIR/Progetto2 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o1 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o2 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o3 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o1 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o2 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o3 1 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
 
 $PBS_WORKDIR/Progetto2 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o1 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o2 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
-$PBS_WORKDIR/Progetto2_o3 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o1 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o2 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1
+# $PBS_WORKDIR/Progetto2_o3 2 4 3 4 1 2 3 4 5 6 7 8 9 10 11 12 1 1 1 1

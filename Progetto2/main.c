@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
 
   if (strategyIndex < 0 || strategyIndex > 2)
   {
-    printf("Invalid strategy index. Allowed values range from 0 to 2 (inclusive).\n");
+    printf("Invalid strategy index. Allowed values range from 0 to 2 (inclusive). Aborting.\n");
     return EXIT_FAILURE;
   }
 
@@ -209,6 +209,14 @@ int main(int argc, char *argv[])
   if(colMat != dimVet) 
   {
     printf("Vector dimension doesn't match matrix column size. Aborting.\n");
+    return EXIT_FAILURE;
+  }
+
+  int numThreads = omp_get_num_threads();
+
+  if(numThreads > colMat) 
+  {
+    printf("Num threads must be less or equal than number of matrix's columns. Aborting.\n");
     return EXIT_FAILURE;
   }
 
@@ -225,6 +233,5 @@ int main(int argc, char *argv[])
     return strategy3(dimVet, righeMat, colMat, argv + 5); // + 5 means we skip command name, strategy and dimensions
   }
 
-  printf("Unhandled error.\n");
-  return EXIT_FAILURE;
+  return EXIT_SUCCESS;
 }
