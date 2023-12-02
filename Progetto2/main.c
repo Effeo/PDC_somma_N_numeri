@@ -4,11 +4,12 @@
 #include <omp.h>
 #include <math.h>
 
-int strategy1(int argc, char *argv[])
+int strategy1(char *argv[])
 {
   int dimVet = atoi(argv[1]);
   int righeMat = atoi(argv[2]);
   int colMat = atoi(argv[3]);
+  
   int i, j;
 
   int **mat = (int **)malloc(righeMat * sizeof(int *));
@@ -57,7 +58,7 @@ int strategy1(int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 
-int strategy2(int argc, char *argv[])
+int strategy2(char *argv[])
 {
   int dimVetInput = atoi(argv[1]);
   int righeMatInput = atoi(argv[2]);
@@ -127,7 +128,7 @@ int strategy2(int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 
-int strategy3(int argc, char *argv[])
+int strategy3(char *argv[])
 {
   int dimVetInput = atoi(argv[1]);
   int righeMatInput = atoi(argv[2]);
@@ -203,9 +204,7 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  int index = 1;
-
-  int strategyIndex = atoi(argv[index++]);
+  int strategyIndex = atoi(argv[1]);
 
   if (strategyIndex < 0 || strategyIndex > 2)
   {
@@ -215,15 +214,15 @@ int main(int argc, char *argv[])
 
   if (strategyIndex == 0)
   {
-    return strategy1(argc, argv + index);
-  }
-  else if (strategyIndex == 1)
-  {
-    return strategy2(argc, argv + index);
+    return strategy1(argv + 1);
   }
   else if (strategyIndex == 2)
   {
-    return strategy3(argc, argv + index);
+    return strategy2(argv + 1);
+  }
+  else if (strategyIndex == 2)
+  {
+    return strategy3(argv + 1);
   }
   return EXIT_FAILURE;
 }
