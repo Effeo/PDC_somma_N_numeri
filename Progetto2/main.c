@@ -4,12 +4,8 @@
 #include <omp.h>
 #include <math.h>
 
-int strategy1(char *argv[])
+int strategy1(int dimVet, int righeMat, int colMat, char *numbers[])
 {
-  int dimVet = atoi(argv[0]);
-  int righeMat = atoi(argv[1]);
-  int colMat = atoi(argv[2]);
-  
   int i, j;
 
   int **mat = (int **)malloc(righeMat * sizeof(int *));
@@ -24,13 +20,13 @@ int strategy1(char *argv[])
   {
     for (j = 0; j < colMat; j++)
     {
-      mat[i][j] = atoi(argv[3 + i * colMat + j]);
+      mat[i][j] = atoi(numbers[i * colMat + j]);
     }
   }
 
   for (i = 0; i < dimVet; i++)
   {
-    vettore[i] = atoi(argv[3 + righeMat * colMat + i]);
+    vettore[i] = atoi(numbers[righeMat * colMat + i]);
   }
 
   int *resVec = (int *)calloc(colMat, sizeof(int));
@@ -58,46 +54,43 @@ int strategy1(char *argv[])
   return EXIT_SUCCESS;
 }
 
-int strategy2(char *argv[])
+int strategy2(int dimVet, int righeMat, int colMat, char *numbers[])
 {
-  int dimVetInput = atoi(argv[0]);
-  int righeMatInput = atoi(argv[1]);
-  int colMatInput = atoi(argv[2]);
   int i, j;
 
-  int **matInput = (int **)malloc(righeMatInput * sizeof(int *));
-  int *vetInput = (int *)malloc(dimVetInput * sizeof(int));
+  int **matInput = (int **)malloc(righeMat * sizeof(int *));
+  int *vetInput = (int *)malloc(dimVet * sizeof(int));
 
   // inizializzazione matrice e vettore
-  for (i = 0; i < righeMatInput; i++)
+  for (i = 0; i < righeMat; i++)
   {
-    matInput[i] = (int *)malloc(colMatInput * sizeof(int));
+    matInput[i] = (int *)malloc(colMat * sizeof(int));
   }
 
-  for (i = 0; i < righeMatInput; i++)
+  for (i = 0; i < righeMat; i++)
   {
-    for (j = 0; j < colMatInput; j++)
+    for (j = 0; j < colMat; j++)
     {
-      matInput[i][j] = atoi(argv[3 + i * colMatInput + j]);
+      matInput[i][j] = atoi(numbers[i * colMat + j]);
     }
   }
 
-  for (i = 0; i < dimVetInput; i++)
+  for (i = 0; i < dimVet; i++)
   {
-    vetInput[i] = atoi(argv[3 + righeMatInput * colMatInput + i]);
+    vetInput[i] = atoi(numbers[righeMat * colMat + i]);
   }
 
-#pragma omp parallel for shared(matInput, vetInput, righeMatInput, colMatInput) private(i, j)
-  for (j = 0; j < colMatInput; ++j)
+#pragma omp parallel for shared(matInput, vetInput, righeMat, colMat) private(i, j)
+  for (j = 0; j < colMat; ++j)
   {
-    for (i = 0; i < righeMatInput; ++i)
+    for (i = 0; i < righeMat; ++i)
     {
       matInput[i][j] = matInput[i][j] * vetInput[j];
     }
   }
 
   printf("matrice risultato:\n");
-  for (i = 0; i < righeMatInput; i++)
+  for (i = 0; i < righeMat; i++)
   {
     for (j = 0; j < omp_get_max_threads(); j++)
     {
@@ -107,13 +100,13 @@ int strategy2(char *argv[])
   }
   printf("\n");
 
-  int *vet_output = (int *)calloc(righeMatInput, sizeof(int));
+  int *vet_output = (int *)calloc(righeMat, sizeof(int));
   int sumtot;
 #pragma omp parallel for reduction(+ : sumtot)
-  for (i = 0; i < righeMatInput; ++i)
+  for (i = 0; i < righeMat; ++i)
   {
     sumtot = 0;
-    for (j = 0; j < colMatInput; ++j)
+    for (j = 0; j < colMat; ++j)
     {
       sumtot += matInput[i][j];
     }
@@ -121,51 +114,48 @@ int strategy2(char *argv[])
   }
 
   printf("risultato:\n");
-  for (i = 0; i < righeMatInput; ++i)
+  for (i = 0; i < righeMat; ++i)
   {
     printf("%d\n", vet_output[i]);
   }
   return EXIT_SUCCESS;
 }
 
-int strategy3(char *argv[])
+int strategy3(int dimVet, int righeMat, int colMat, char *numbers[])
 {
-  int dimVetInput = atoi(argv[0]);
-  int righeMatInput = atoi(argv[1]);
-  int colMatInput = atoi(argv[2]);
   int i, j;
 
-  int **matInput = (int **)malloc(righeMatInput * sizeof(int *));
-  int *vetInput = (int *)malloc(dimVetInput * sizeof(int));
+  int **matInput = (int **)malloc(righeMat * sizeof(int *));
+  int *vetInput = (int *)malloc(dimVet * sizeof(int));
 
   // inizializzazione matrice e vettore
-  for (i = 0; i < righeMatInput; i++)
+  for (i = 0; i < righeMat; i++)
   {
-    matInput[i] = (int *)malloc(colMatInput * sizeof(int));
+    matInput[i] = (int *)malloc(colMat * sizeof(int));
   }
 
-  for (i = 0; i < righeMatInput; i++)
+  for (i = 0; i < righeMat; i++)
   {
-    for (j = 0; j < colMatInput; j++)
+    for (j = 0; j < colMat; j++)
     {
-      matInput[i][j] = atoi(argv[3 + i * colMatInput + j]);
+      matInput[i][j] = atoi(numbers[i * colMat + j]);
     }
   }
 
-  for (i = 0; i < dimVetInput; i++)
+  for (i = 0; i < dimVet; i++)
   {
-    vetInput[i] = atoi(argv[3 + righeMatInput * colMatInput + i]);
+    vetInput[i] = atoi(numbers[righeMat * colMat + i]);
   }
 
   int numThreads = omp_get_max_threads();
   int blockRows = sqrt(numThreads);
   int blockCols = numThreads / blockRows;
-  int rowBlockSize = righeMatInput / blockRows;
-  int colBlockSize = colMatInput / blockCols;
-  int rowRemainder = righeMatInput % blockRows;
-  int colRemainder = colMatInput % blockCols;
+  int rowBlockSize = righeMat / blockRows;
+  int colBlockSize = colMat / blockCols;
+  int rowRemainder = righeMat % blockRows;
+  int colRemainder = colMat % blockCols;
 
-  int *vet_output = (int *)calloc(righeMatInput, sizeof(int));
+  int *vet_output = (int *)calloc(righeMat, sizeof(int));
 
 #pragma omp parallel private(i, j)
   {
@@ -187,7 +177,7 @@ int strategy3(char *argv[])
   }
 
   printf("risultato:\n");
-  for (i = 0; i < righeMatInput; ++i)
+  for (i = 0; i < righeMat; ++i)
   {
     printf("%d\n", vet_output[i]);
   }
@@ -212,17 +202,27 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
+  int dimVet = atoi(argv[2]);
+  int righeMat = atoi(argv[3]);
+  int colMat = atoi(argv[4]);
+  
+  if(colMat != dimVet) 
+  {
+    printf("Vector dimension doesn't match matrix column size. Aborting.\n");
+    return EXIT_FAILURE;
+  }
+
   if (strategyIndex == 0)
   {
-    return strategy1(argv + 2); // + 2 means we skip command name and strategyIndex
+    return strategy1(dimVet, righeMat, colMat, argv + 5); // + 5 means we skip command name, strategy and dimensions
   }
   else if (strategyIndex == 2)
   {
-    return strategy2(argv + 2); // + 2 means we skip command name and strategyIndex
+    return strategy2(dimVet, righeMat, colMat, argv + 5); // + 5 means we skip command name, strategy and dimensions
   }
   else if (strategyIndex == 2)
   {
-    return strategy3(argv + 2); // + 2 means we skip command name and strategyIndex
+    return strategy3(dimVet, righeMat, colMat, argv + 5); // + 5 means we skip command name, strategy and dimensions
   }
 
   printf("Unhandled error.\n");
