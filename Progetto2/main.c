@@ -224,5 +224,7 @@ int main(int argc, char *argv[])
   {
     return strategy3(argv + 2); // + 2 means we skip command name and strategyIndex
   }
+
+  printf("Unhandled error.\n");
   return EXIT_FAILURE;
 }
