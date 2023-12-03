@@ -31,7 +31,7 @@ int strategy1(int dimVet, int righeMat, int colMat, char *numbers[])
 
   int *resVec = (int *)calloc(colMat, sizeof(int));
 
-#pragma omp parallel for shared(resVec, vettore, dimVet) private(i, j) num_threads(omp_get_num_threads())
+  #pragma omp parallel for shared(resVec, vettore) private(i, j) num_threads(omp_get_num_threads())
   for (i = 0; i < righeMat; ++i)
   {
     int r = 0;
@@ -42,7 +42,7 @@ int strategy1(int dimVet, int righeMat, int colMat, char *numbers[])
     resVec[i] = r;
   }
 
-#pragma omp master
+  #pragma omp master
   {
 
     for (i = 0; i < righeMat; i++)
@@ -80,7 +80,7 @@ int strategy2(int dimVet, int righeMat, int colMat, char *numbers[])
     vetInput[i] = atoi(numbers[righeMat * colMat + i]);
   }
 
-#pragma omp parallel for shared(matInput, vetInput, righeMat, colMat) private(i, j)
+  #pragma omp parallel for shared(matInput, vetInput, righeMat, colMat) private(i, j)
   for (j = 0; j < colMat; ++j)
   {
     for (i = 0; i < righeMat; ++i)
@@ -89,20 +89,9 @@ int strategy2(int dimVet, int righeMat, int colMat, char *numbers[])
     }
   }
 
-  printf("matrice risultato:\n");
-  for (i = 0; i < righeMat; i++)
-  {
-    for (j = 0; j < omp_get_max_threads(); j++)
-    {
-      printf("%d ", matInput[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-
   int *vet_output = (int *)calloc(righeMat, sizeof(int));
   int sumtot;
-#pragma omp parallel for reduction(+ : sumtot)
+  #pragma omp parallel for reduction(+ : sumtot)
   for (i = 0; i < righeMat; ++i)
   {
     sumtot = 0;
@@ -182,7 +171,6 @@ int strategy3(int dimVet, int righeMat, int colMat, char *numbers[])
     printf("%d\n", vet_output[i]);
   }
 
-  free(vet_output);
   return EXIT_SUCCESS;
 }
 
