@@ -1,16 +1,18 @@
 #!/bin/bash
 
-#PBS -o Progetto2.out
-#PBS -e Progetto2.err
+# Direttive
+
 #PBS -q studenti
 #PBS -l nodes=1:ppn=8
-#PBS -N Progetto2
+#PBS -N pmatvet
+#PBS -o pmatvet.out
+#PBS -e pmatvet.err
 
 cat $PBS_NODEFILE
 
-PBS_O_WORKDIR=$PBS_O_HOME/Progetto2
+PBS_O_WORKDIR=$PBS_O_HOME/pmatvet_mp
 
-echo -----------------------------------
+echo ------------------------------------------------------
 echo PBS: qsub is running on $PBS_O_HOST
 echo PBS: originating queue is $PBS_O_QUEUE
 echo PBS: executing queue is $PBS_QUEUE
@@ -21,23 +23,19 @@ echo PBS: job name is $PBS_JOBNAME
 echo PBS: node file is $PBS_NODEFILE
 echo PBS: current home directory is $PBS_O_HOME
 echo PBS: PATH = $PBS_O_PATH
-
-echo -----------------------------------
+echo ------------------------------------------------------
 
 export PSC_OMP_AFFINITY=TRUE
 
-gcc -lgomp -fopenmp -o $PBS_O_WORKDIR/Progetto2 $PBS_O_WORKDIR/main.c
+gcc -fopenmp -lgomp -o $PBS_O_WORKDIR/pmatvet $PBS_O_WORKDIR/pmatvet.c
 
-for strategy in 1 2 3
+for t in 1 2 4 8
 do
-    for threads in 1 2 4 8
+    for n in 100 1000 10000
     do
-        for dim in 100 1000 10000
-        do
-            export OMP_NUM_THREADS=$threads
-            $PBS_O_WORKDIR/Progetto2 $strategy $dim $dim
-        done
+        export OMP_NUM_THREADS=$t
+        $PBS_O_WORKDIR/pmatvet $n $n
     done
 done
 
-echo -----------------------------------
+echo ------------------------------------------------------
