@@ -1,0 +1,237 @@
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+-----------------------------------
+PBS: qsub is running on ui-studenti.scope.unina.it
+PBS: originating queue is studenti
+PBS: executing queue is studenti
+PBS: working directory is /homes/DMA/PDC/2024/RLNFNC02R/Progetto2
+PBS: execution mode is PBS_BATCH
+PBS: job identifier is 4018516.torque02.scope.unina.it
+PBS: job name is Progetto2
+PBS: node file is /var/spool/pbs/aux//4018516.torque02.scope.unina.it
+PBS: current home directory is /homes/DMA/PDC/2024/RLNFNC02R
+PBS: PATH = /usr/lib64/openmpi/1.2.7-gcc/bin:/usr/kerberos/bin:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/mpirt/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64_mic:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/debugger/gui/intel64:/opt/d-cache/srm/bin:/opt/d-cache/dcap/bin:/opt/edg/bin:/opt/glite/bin:/opt/globus/bin:/opt/lcg/bin:/usr/local/bin:/bin:/usr/bin:/opt/exp_soft/HADOOP/hadoop-1.0.3/bin:/opt/exp_soft/unina.it/intel/composerxe/bin/intel64/:/opt/exp_soft/unina.it/MPJExpress/mpj-v0_38/bin:/homes/DMA/PDC/2024/RLNFNC02R/bin
+-----------------------------------
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 1
+strategia 1
+tempo: 0.000097 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 1
+strategia 1
+tempo: 0.008296 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 1
+strategia 1
+tempo: 0.719956 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 2
+strategia 1
+tempo: 0.000094 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 2
+strategia 1
+tempo: 0.008378 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 2
+strategia 1
+tempo: 0.719870 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 4
+strategia 1
+tempo: 0.000106 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 4
+strategia 1
+tempo: 0.008323 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 4
+strategia 1
+tempo: 0.719827 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 8
+strategia 1
+tempo: 0.000096 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 8
+strategia 1
+tempo: 0.007153 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 8
+strategia 1
+tempo: 0.719919 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 1
+strategia 2
+tempo: 0.000090 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 1
+strategia 2
+tempo: 0.008287 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 1
+strategia 2
+tempo: 0.719018 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 2
+strategia 2
+tempo: 0.000195 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 2
+strategia 2
+tempo: 0.016094 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 2
+strategia 2
+tempo: 4.253672 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 4
+strategia 2
+tempo: 0.000403 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 4
+strategia 2
+tempo: 0.050602 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 4
+strategia 2
+tempo: 5.184061 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 8
+strategia 2
+tempo: 0.000785 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 8
+strategia 2
+tempo: 0.074531 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 8
+strategia 2
+tempo: 7.298535 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 1
+strategia 3
+tempo: 0.000108 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 1
+strategia 3
+tempo: 0.009287 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 1
+strategia 3
+tempo: 0.928559 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 2
+strategia 3
+tempo: 0.002174 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 2
+strategia 3
+tempo: 0.006486 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 2
+strategia 3
+tempo: 0.479928 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 4
+strategia 3
+tempo: 0.002458 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 4
+strategia 3
+tempo: 0.006100 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 4
+strategia 3
+tempo: 0.326611 secondi
+
+righe matrice: 100
+colonne matrice: 100
+numero di threads: 8
+strategia 3
+tempo: 0.007185 secondi
+
+righe matrice: 1000
+colonne matrice: 1000
+numero di threads: 8
+strategia 3
+tempo: 0.009164 secondi
+
+righe matrice: 10000
+colonne matrice: 10000
+numero di threads: 8
+strategia 3
+tempo: 0.173485 secondi
+
+-----------------------------------

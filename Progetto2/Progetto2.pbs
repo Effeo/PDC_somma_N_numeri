@@ -26,7 +26,7 @@ echo -----------------------------------
 
 export PSC_OMP_AFFINITY=TRUE
 
-gcc -lgomp -fopenmp -o $PBS_O_WORKDIR/Progetto2 $PBS_O_WORKDIR/main.c
+gcc -lgomp -fopenmp -lm -o $PBS_O_WORKDIR/Progetto2 $PBS_O_WORKDIR/main.c
 
 for strategy in 1 2 3
 do

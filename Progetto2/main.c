@@ -47,11 +47,11 @@ int strategy1(int righeMat, int colMat)
   t1 = omp_get_wtime();
   time = t1 - t0;
 
-  printf("risultato:\n");
+  /*printf("risultato:\n");
   for (i = 0; i < righeMat; i++)
   {
     printf("%d\n", resVec[i]);
-  }
+  }*/
 
   printf("tempo: %f secondi\n\n", time);
   return EXIT_SUCCESS;
@@ -109,11 +109,11 @@ int strategy2(int righeMat, int colMat)
   t1 = omp_get_wtime();
   time = t1 - t0;
 
-  printf("risultato:\n");
+  /*printf("risultato:\n");
   for (i = 0; i < righeMat; ++i)
   {
     printf("%d\n", vet_output[i]);
-  }
+  }*/
 
   printf("tempo: %f secondi\n\n", time);
   return EXIT_SUCCESS;
@@ -177,10 +177,13 @@ int strategy3(int righeMat, int colMat)
 
   t1 = omp_get_wtime();
   time = t1 - t0;
-  printf("risultato:\n");
+  
+  /*printf("risultato:\n");
   for (i = 0; i < righeMat; ++i)
-  {    printf("%d\n", vet_output[i]);
-  }
+  {    
+    printf("%d\n", vet_output[i]);
+  }*/
+  
   printf("tempo: %f secondi\n\n", time);
   return EXIT_SUCCESS;
 }
@@ -212,7 +215,7 @@ int main(int argc, char *argv[])
 
   printf("righe matrice: %d\n", righeMat);
   printf("colonne matrice: %d\n", colMat);
-  printf("numero di threads: %d\n", omp_get_max_num_threads());
+  printf("numero di threads: %d\n", omp_get_max_threads());
   if (strategyIndex == 1)
   {
     printf("strategia 1\n");
