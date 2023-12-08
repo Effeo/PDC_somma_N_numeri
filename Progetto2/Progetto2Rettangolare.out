@@ -1,0 +1,93 @@
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+-----------------------------------
+PBS: qsub is running on ui-studenti.scope.unina.it
+PBS: originating queue is studenti
+PBS: executing queue is studenti
+PBS: working directory is /homes/DMA/PDC/2024/RLNFNC02R/Progetto2
+PBS: execution mode is PBS_BATCH
+PBS: job identifier is 4018676.torque02.scope.unina.it
+PBS: job name is Progetto2
+PBS: node file is /var/spool/pbs/aux//4018676.torque02.scope.unina.it
+PBS: current home directory is /homes/DMA/PDC/2024/RLNFNC02R
+PBS: PATH = /usr/lib64/openmpi/1.2.7-gcc/bin:/usr/kerberos/bin:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/mpirt/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64_mic:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/debugger/gui/intel64:/opt/d-cache/srm/bin:/opt/d-cache/dcap/bin:/opt/edg/bin:/opt/glite/bin:/opt/globus/bin:/opt/lcg/bin:/usr/local/bin:/bin:/usr/bin:/opt/exp_soft/HADOOP/hadoop-1.0.3/bin:/opt/exp_soft/unina.it/intel/composerxe/bin/intel64/:/opt/exp_soft/unina.it/MPJExpress/mpj-v0_38/bin:/homes/DMA/PDC/2024/RLNFNC02R/bin
+-----------------------------------
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 1
+strategia 1
+tempo: 0.000097 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 2
+strategia 1
+tempo: 0.000100 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 4
+strategia 1
+tempo: 0.000095 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 8
+strategia 1
+tempo: 0.000099 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 1
+strategia 2
+tempo: 0.000086 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 2
+strategia 2
+tempo: 0.000133 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 4
+strategia 2
+tempo: 0.000351 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 8
+strategia 2
+tempo: 0.000472 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 1
+strategia 3
+tempo: 0.000118 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 2
+strategia 3
+tempo: 0.000342 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 4
+strategia 3
+tempo: 0.002213 secondi
+
+righe matrice: 10
+colonne matrice: 1000
+numero di threads: 8
+strategia 3
+tempo: 0.006940 secondi
+
+-----------------------------------
