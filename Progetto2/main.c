@@ -6,7 +6,7 @@
 
 int strategy1(int righeMat, int colMat)
 {
-  int i, j;
+  int i, j, counter = 1;
 
   int **mat = (int **)malloc(righeMat * sizeof(int *));
   int *vettore = (int *)malloc(colMat * sizeof(int));
@@ -21,13 +21,14 @@ int strategy1(int righeMat, int colMat)
   {
     for (j = 0; j < colMat; j++)
     {
-      mat[i][j] = 1;
+      mat[i][j] = counter++;
     }
   }
 
+  counter = 1;
   for (i = 0; i < colMat; i++)
   {
-    vettore[i] = 1;
+    vettore[i] = counter++;
   }
 
   int *resVec = (int *)calloc(colMat, sizeof(int));
@@ -47,11 +48,11 @@ int strategy1(int righeMat, int colMat)
   t1 = omp_get_wtime();
   time = t1 - t0;
 
-  /*printf("risultato:\n");
+  printf("risultato:\n");
   for (i = 0; i < righeMat; i++)
   {
     printf("%d\n", resVec[i]);
-  }*/
+  }
 
   printf("tempo: %f secondi\n\n", time);
   return EXIT_SUCCESS;
@@ -59,7 +60,7 @@ int strategy1(int righeMat, int colMat)
 
 int strategy2(int righeMat, int colMat)
 {
-  int i, j;
+  int i, j, counter = 1;
   int **matInput = (int **)malloc(righeMat * sizeof(int *));
   int *vetInput = (int *)malloc(colMat * sizeof(int));
   double t0, t1, time;
@@ -74,13 +75,14 @@ int strategy2(int righeMat, int colMat)
   {
     for (j = 0; j < colMat; j++)
     {
-      matInput[i][j] = 1;
+      mat[i][j] = counter++;
     }
   }
 
+  counter = 1;
   for (i = 0; i < colMat; i++)
   {
-    vetInput[i] = 1;
+    vettore[i] = counter++;
   }
 
   #pragma omp parallel for shared(matInput, vetInput, righeMat, colMat) private(i, j)
@@ -109,11 +111,11 @@ int strategy2(int righeMat, int colMat)
   t1 = omp_get_wtime();
   time = t1 - t0;
 
-  /*printf("risultato:\n");
+  printf("risultato:\n");
   for (i = 0; i < righeMat; ++i)
   {
     printf("%d\n", vet_output[i]);
-  }*/
+  }
 
   printf("tempo: %f secondi\n\n", time);
   return EXIT_SUCCESS;
@@ -121,7 +123,7 @@ int strategy2(int righeMat, int colMat)
 
 int strategy3(int righeMat, int colMat)
 {
-  int i, j;
+  int i, j, counter = 1;
   double t0, t1, time;
   int **matInput = (int **)malloc(righeMat * sizeof(int *));
   int *vetInput = (int *)malloc(colMat * sizeof(int));
@@ -136,13 +138,14 @@ int strategy3(int righeMat, int colMat)
   {
     for (j = 0; j < colMat; j++)
     {
-      matInput[i][j] = 1;
+      mat[i][j] = counter++;
     }
   }
 
+  counter = 1;
   for (i = 0; i < colMat; i++)
   {
-    vetInput[i] = 1;
+    vettore[i] = counter++;
   }
 
   int numThreads = omp_get_max_threads();
@@ -178,11 +181,11 @@ int strategy3(int righeMat, int colMat)
   t1 = omp_get_wtime();
   time = t1 - t0;
   
-  /*printf("risultato:\n");
+  printf("risultato:\n");
   for (i = 0; i < righeMat; ++i)
   {    
     printf("%d\n", vet_output[i]);
-  }*/
+  }
   
   printf("tempo: %f secondi\n\n", time);
   return EXIT_SUCCESS;
