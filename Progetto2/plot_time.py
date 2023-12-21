@@ -101,6 +101,7 @@ for nthreads, group in groups:
     plt.savefig(f'Scaled_Speedup_NThreads_{nthreads}.png')
 '''
 
+'''
 # Load the data
 df = pd.read_csv('tempi_matrici_rettangolari.csv')
 
@@ -122,3 +123,44 @@ for strategy, group in strategy_groups:
     
     # Save the plot as an image
     plt.savefig(f'Strategy_{strategy}.png')
+'''
+# Load the data
+df = pd.read_csv('tempi_matrici_quadrate.csv')
+
+# Calculate the sequential time for each strategy and dimension
+df_sequential = df[df['NThreads'] == 1].set_index(['strategy', 'dimension'])['Tempo (s)']
+
+# Define function to calculate speedup
+def calculate_speedup(row):
+    if (row['strategy'], row['dimension']) in df_sequential.index:
+        return df_sequential.loc[row['strategy'], row['dimension']] / row['Tempo (s)']
+    else:
+        return None  # or some other value indicating missing data
+
+# Define function to calculate efficiency
+def calculate_efficiency(row):
+    speedup = calculate_speedup(row)
+    if speedup is not None:
+        return speedup / row['NThreads']
+    else:
+        return None  # or some other value indicating missing data
+
+
+# Calculate the efficiency
+df['Efficiency'] = df.apply(calculate_efficiency, axis=1)
+
+# Group the data by 'NThreads'
+groups = df.groupby('NThreads')
+
+# For each group
+for nthreads, group in groups:
+    # Create a plot for efficiency
+    plt.figure()
+    strategy_groups = group.groupby('strategy')
+    for strategy, strategy_group in strategy_groups:
+        plt.plot(strategy_group['dimension'], strategy_group['Efficiency'], label=f'Strategy {strategy}')
+    plt.xlabel('Dimension')
+    plt.ylabel('Efficiency')
+    plt.title(f'NThreads {nthreads}')
+    plt.legend()
+    plt.savefig(f'Efficiency_NThreads_{nthreads}.png')
