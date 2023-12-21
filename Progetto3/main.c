@@ -1,81 +1,108 @@
-#include "mpi.h"
-#include <math.h>
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-#define N 1000  // Dimension of the matrices
-
-void initialize_matrix(double* matrix, int rows, int cols) {
-    int i, j;
-
-    for (i = 0; i < rows; i++) {
-        for (j = 0; j < cols; j++) {
-            matrix[i*cols + j] = 1.0;
-        }
+void initializeMatrix(int* matrix, int size) {
+    int i;
+    for (i = 0; i < size * size; ++i) {
+        matrix[i] = 1;
     }
 }
 
-void multiply(double* A, double* B, double* C, int rows, int cols) {
+void matrixMultiply(int* A, int* B, int* C, int blockSize) {
     int i, j, k;
-    
-    for (i = 0; i < rows; i++) {
-        for (j = 0; j < cols; j++) {
-            C[i*cols + j] = 0.0;
-            for (k = 0; k < cols; k++) {
-                C[i*cols + j] += A[i*cols + k] * B[k*cols + j];
+    for (i = 0; i < blockSize; ++i) {
+        for (j = 0; j < blockSize; ++j) {
+            for (k = 0; k < blockSize; ++k) {
+                C[i * blockSize + j] += A[i * blockSize + k] * B[k * blockSize + j];
             }
         }
     }
 }
 
 int main(int argc, char* argv[]) {
-    int rank, size;
-    int i, j;
+    int rank, size, matrixSize, blockSize;
+    double startTime, endTime;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    int dims[2] = {0, 0};
-    MPI_Dims_create(size, 2, dims);
+    if (argc != 2) {
+        if (rank == 0) {
+            printf("Usage: %s <matrix_size>\n", argv[0]);
+        }
+        MPI_Finalize();
+        return 1;
+    }
 
+    matrixSize = atoi(argv[1]);
+    //ask this part
+    int p = sqrt(size);
+    if (matrixSize % p != 0) {
+        if (rank == 0) {
+            printf("Matrix size must be a multiple of the square root of the number of processors.\n");
+        }
+        MPI_Finalize();
+        return 1;
+    }
+    blockSize = matrixSize / p;
+
+    int* A = (int*)malloc(blockSize * blockSize * sizeof(int));
+    int* B = (int*)malloc(blockSize * blockSize * sizeof(int));
+    int* C = (int*)calloc(blockSize * blockSize, sizeof(int));
+
+    initializeMatrix(A, blockSize);
+    initializeMatrix(B, blockSize);
+
+    int dims[2] = {p, p};
     int periods[2] = {0, 0};
-    MPI_Comm grid_comm;
-    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 0, &grid_comm);
+    MPI_Comm gridComm;
+    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &gridComm);
 
     int coords[2];
-    MPI_Cart_coords(grid_comm, rank, 2, coords);
+    MPI_Cart_coords(gridComm, rank, 2, coords);
 
-    int rows = N / dims[0];
-    int cols = N / dims[1];
+    MPI_Comm rowComm, colComm;
+    MPI_Comm_split(gridComm, coords[0], coords[1], &rowComm);
+    MPI_Comm_split(gridComm, coords[1], coords[0], &colComm);
 
-    double* A = (double*)malloc(rows * cols * sizeof(double));
-    double* B = (double*)malloc(rows * cols * sizeof(double));
-    double* C = (double*)malloc(rows * cols * sizeof(double));
-
+    // Start timing
     if (rank == 0) {
-        initialize_matrix(A, rows, cols);
-        initialize_matrix(B, rows, cols);
+        startTime = MPI_Wtime();
     }
 
-    MPI_Bcast(A, rows*cols, MPI_DOUBLE, 0, grid_comm);
-    MPI_Bcast(B, rows*cols, MPI_DOUBLE, 0, grid_comm);
-
-    multiply(A, B, C, rows, cols);
-
-    if (rank == 0) {
-        for (i = 0; i < rows; i++) {
-            for (j = 0; j < cols; j++) {
-                printf("%f ", C[i*cols + j]);
-            }
-            printf("\n");
+    int step;
+    int root;
+    int leftRank, rightRank;
+    // Implement Broadcast-Multiply-Rolling Strategy
+    for (step = 0; step < p; ++step) {
+        // Broadcast A block within each column
+        root = (coords[0] + step) % p;
+        if (root == coords[1]) {
+            MPI_Bcast(A, blockSize * blockSize, MPI_INT, root, colComm);
         }
+
+        // Multiply current blocks of A and B
+        matrixMultiply(A, B, C, blockSize);
+
+        // Roll B block to the left
+        MPI_Cart_shift(rowComm, 0, 1, &leftRank, &rightRank);
+        MPI_Sendrecv_replace(B, blockSize * blockSize, MPI_INT, leftRank, 0, rightRank, 0, rowComm, MPI_STATUS_IGNORE);
     }
+
+    // Stop timing and print result
+    if (rank == 0) {
+        endTime = MPI_Wtime();
+        printf("Total time: %f seconds\n", endTime - startTime);
+    }
+
+    // TODO: Gather results at root see if we need it
 
     free(A);
     free(B);
     free(C);
 
     MPI_Finalize();
-
     return 0;
 }
