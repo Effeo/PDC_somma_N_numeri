@@ -22,29 +22,37 @@ void matrixMultiply(int* A, int* B, int* C, int blockSize) {
 }
 
 int main(int argc, char* argv[]) {
-    int rank, size, matrixSize, blockSize;
+    int rank, nProcessors, matrixSize, blockSize;
     double startTime, endTime;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
 
-    if (argc != 2) {
+    if (argc < 2) {
         if (rank == 0) {
-            printf("Usage: %s <matrix_size>\n", argv[0]);
+            printf("Specify the matrix's size\n");
         }
         MPI_Finalize();
-        return 1;
+        return EXIT_FAILURE;
+    }
+    
+    if(nProcessors != 1 && nProcessors != 4){
+      if (rank == 0) {
+            printf("Number of processors must be 1 or 4\n");
+        }
+        MPI_Finalize();
+        return EXIT_FAILURE;
     }
 
     matrixSize = atoi(argv[1]);
-    //ask this part
-    int p = sqrt(size);
+    int p = sqrt(nProcessors);
+
     if (matrixSize % p != 0) {
         if (rank == 0) {
             printf("Matrix size must be a multiple of the square root of the number of processors.\n");
         }
         MPI_Finalize();
-        return 1;
+        return EXIT_FAILURE;
     }
     blockSize = matrixSize / p;
 
