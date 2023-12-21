@@ -6,7 +6,7 @@
 void initializeMatrix(int* matrix, int size) {
     int i;
     for (i = 0; i < size * size; ++i) {
-        matrix[i] = 1;
+        matrix[i] = i;
     }
 }
 
