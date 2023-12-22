@@ -6,7 +6,7 @@
 void initializeMatrix(int* matrix, int size) {
     int i;
     for (i = 0; i < size * size; ++i) {
-        matrix[i] = 1;
+        matrix[i] = i;
     }
 }
 
@@ -23,7 +23,7 @@ void matrixMultiply(int* A, int* B, int* C, int blockSize) {
 
 int main(int argc, char* argv[]) {
     int rank, nProcessors, matrixSize, blockSize;
-    double startTime, endTime;
+    double startTime = 0.0, endTime = 0.0;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
@@ -45,6 +45,15 @@ int main(int argc, char* argv[]) {
     }
 
     matrixSize = atoi(argv[1]);
+
+    if(matrixSize < 1){
+      if (rank == 0) {
+            printf("Matrix size must be greater than 0\n");
+        }
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+
     int p = sqrt(nProcessors);
 
     if (matrixSize % p != 0) {
@@ -82,7 +91,7 @@ int main(int argc, char* argv[]) {
 
     int step;
     int root;
-    int leftRank, rightRank;
+    int shiftSrc, shiftDest;
     // Implement Broadcast-Multiply-Rolling Strategy
     for (step = 0; step < p; ++step) {
         // Broadcast A block within each column
@@ -95,14 +104,19 @@ int main(int argc, char* argv[]) {
         matrixMultiply(A, B, C, blockSize);
 
         // Roll B block to the left
-        MPI_Cart_shift(rowComm, 0, 1, &leftRank, &rightRank);
-        MPI_Sendrecv_replace(B, blockSize * blockSize, MPI_INT, leftRank, 0, rightRank, 0, rowComm, MPI_STATUS_IGNORE);
+        
+        MPI_Cart_shift(gridComm, 1, -1, &shiftSrc, &shiftDest); // Shift along the second dimension
+
+        // Only perform send/receive if the ranks are valid
+        if (shiftSrc != MPI_PROC_NULL && shiftDest != MPI_PROC_NULL) {
+            MPI_Sendrecv_replace(B, blockSize * blockSize, MPI_INT, shiftDest, 0, shiftSrc, 0, gridComm, MPI_STATUS_IGNORE);
+        }
     }
 
     // Stop timing and print result
     if (rank == 0) {
         endTime = MPI_Wtime();
-        printf("Total time: %f seconds\n", endTime - startTime);
+        printf("Total time: %f seconds\n\n", endTime - startTime);
     }
 
     // TODO: Gather results at root see if we need it

@@ -21,11 +21,9 @@ echo PBS: job name is $PBS_JOBNAME
 echo PBS: node file is $PBS_NODEFILE
 echo PBS: current home directory is $PBS_O_HOME
 echo PBS: PATH = $PBS_O_PATH
-
 echo -----------------------------------
 
 export PSC_OMP_AFFINITY=TRUE
 
 mpicc -o $PBS_O_WORKDIR/Progetto3 $PBS_O_WORKDIR/main.c -lm
-mpirun -np 4 --machinefile $PBS_NODEFILE $PBS_O_WORKDIR/Progetto3 100
-echo -----------------------------------
+mpirun -np 4 --machinefile $PBS_NODEFILE $PBS_O_WORKDIR/Progetto3 -1
