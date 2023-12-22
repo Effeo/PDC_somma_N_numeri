@@ -1,60 +1,69 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load the data
-df = pd.read_csv('tempi_matrici.csv', names=['Matrix Size', 'Number of Processors', 'Total Time (s)'])
+# Your data
+data = {
+    "Matrix Size": [100, 100, 500, 500, 1000, 1000, 2000, 2000],
+    "Number of Processors": [1, 4, 1, 4, 1, 4, 1, 4],
+    "Total Time (s)": [0.003183, 0.000712, 0.346667, 0.130989, 5.626958, 1.028714, 54.699814, 16.398171]
+}
 
-# Calculate the sequential time for each matrix size
-df_sequential = df[df['Number of Processors'] == 1].set_index('Matrix Size')['Total Time (s)']
+# Convert to DataFrame
+df = pd.DataFrame(data)
 
-# Define function to calculate speedup
-def calculate_speedup(row):
-    if row['Matrix Size'] in df_sequential.index:
-        return df_sequential.loc[row['Matrix Size']] / row['Total Time (s)']
-    else:
-        return None  # or some other value indicating missing data
+# Separate data for 1 and 4 processors and reset index to align both DataFrames
+df_1_processor = df[df["Number of Processors"] == 1].reset_index(drop=True)
+df_4_processors = df[df["Number of Processors"] == 4].reset_index(drop=True)
 
-# Define function to calculate efficiency
-def calculate_efficiency(row):
-    speedup = calculate_speedup(row)
-    if speedup is not None:
-        return speedup / row['Number of Processors']
-    else:
-        return None  # or some other value indicating missing data
 
-# Calculate the speedup and efficiency
-df['Speedup'] = df.apply(calculate_speedup, axis=1)
-df['Efficiency'] = df.apply(calculate_efficiency, axis=1)
+# Calculate Speedup: Time for 1 processor / Time for 4 processors
+speedup = df_1_processor['Total Time (s)'] / df_4_processors['Total Time (s)']
 
-# Filter data for number of processors 1 and 4
-df = df[df['Number of Processors'].isin([1, 4])]
+# Calculate Efficiency: Speedup / Number of Processors
+efficiency = speedup / df_4_processors['Number of Processors']
 
-# Create a plot for total time
-plt.figure()
-for num_procs in [1, 4]:  # assuming you only have these two number of processors
-    group = df[df['Number of Processors'] == num_procs]
-    plt.plot(group['Matrix Size'], group['Total Time (s)'], label=f'NProcessors {num_procs}')
+# Add Speedup and Efficiency to df_4_processors DataFrame
+df_4_processors = df_4_processors.assign(Speedup=speedup, Efficiency=efficiency)
+
+# Print the dataframes to verify the data
+print("Data for 1 processor:")
+print(df_1_processor)
+print("\nData for 4 processors:")
+print(df_4_processors)
+
+# Print calculated Speedup and Efficiency
+print("\nCalculated Speedup:")
+print(df_4_processors["Speedup"])
+print("\nCalculated Efficiency:")
+print(df_4_processors["Efficiency"])
+
+# Plotting Performance Comparison
+plt.figure(figsize=(10, 6))
+plt.plot(df_1_processor["Matrix Size"], df_1_processor["Total Time (s)"], label='1 Processor', marker='o')
+plt.plot(df_4_processors["Matrix Size"], df_4_processors["Total Time (s)"], label='4 Processors', marker='o')
 plt.xlabel('Matrix Size')
 plt.ylabel('Total Time (s)')
-plt.legend(loc='upper left')
-plt.savefig('TotalTime.png')
+plt.title('Performance Comparison')
+plt.legend()
+plt.grid(True)
+plt.savefig('performance_comparison.png')
 
-# Create a plot for speedup
-plt.figure()
-for num_procs in df['Number of Processors'].unique():
-    group = df[df['Number of Processors'] == num_procs]
-    plt.plot(group['Matrix Size'], group['Speedup'], label=f'Number of Processors {num_procs}')
+# Plotting Speedup
+plt.figure(figsize=(10, 6))
+plt.plot(df_4_processors["Matrix Size"], df_4_processors["Speedup"], label='Speedup', marker='o')
 plt.xlabel('Matrix Size')
 plt.ylabel('Speedup')
+plt.title('Speedup for 4 Processors')
 plt.legend()
-plt.savefig('Speedup.png')
+plt.grid(True)
+plt.savefig('speedup_4_processors.png')
 
-# Create a plot for efficiency
-plt.figure()
-for num_procs in df['Number of Processors'].unique():
-    group = df[df['Number of Processors'] == num_procs]
-    plt.plot(group['Matrix Size'], group['Efficiency'], label=f'Number of Processors {num_procs}')
+# Plotting Efficiency
+plt.figure(figsize=(10, 6))
+plt.plot(df_4_processors["Matrix Size"], df_4_processors["Efficiency"], label='Efficiency', marker='o')
 plt.xlabel('Matrix Size')
 plt.ylabel('Efficiency')
+plt.title('Efficiency for 4 Processors')
 plt.legend()
-plt.savefig('Efficiency.png')
+plt.grid(True)
+plt.savefig('efficiency_4_processors.png')
