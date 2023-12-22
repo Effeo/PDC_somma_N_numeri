@@ -2,7 +2,7 @@ import csv
 import re
 
 # Open the input and output files
-with open('Progetto3_100_1000.out', 'r') as infile, open('tempi_matrici.csv', 'w', newline='') as outfile:
+with open('Progetto3.out', 'r') as infile, open('tempi_matrici.csv', 'w', newline='') as outfile:
     # Create a CSV writer
     writer = csv.writer(outfile)
     # Write the header row
