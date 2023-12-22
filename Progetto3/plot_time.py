@@ -1,20 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Your data
-data = {
-    "Matrix Size": [100, 100, 500, 500, 1000, 1000, 2000, 2000],
-    "Number of Processors": [1, 4, 1, 4, 1, 4, 1, 4],
-    "Total Time (s)": [0.003183, 0.000712, 0.346667, 0.130989, 5.626958, 1.028714, 54.699814, 16.398171]
-}
-
-# Convert to DataFrame
-df = pd.DataFrame(data)
+# Read data from CSV file
+df = pd.read_csv('tempi_matrici.csv')
 
 # Separate data for 1 and 4 processors and reset index to align both DataFrames
 df_1_processor = df[df["Number of Processors"] == 1].reset_index(drop=True)
 df_4_processors = df[df["Number of Processors"] == 4].reset_index(drop=True)
-
 
 # Calculate Speedup: Time for 1 processor / Time for 4 processors
 speedup = df_1_processor['Total Time (s)'] / df_4_processors['Total Time (s)']

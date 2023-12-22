@@ -23,7 +23,8 @@ void matrixMultiply(int* A, int* B, int* C, int blockSize) {
 
 int main(int argc, char* argv[]) {
     int rank, nProcessors, matrixSize, blockSize;
-    double startTime = 0.0, endTime = 0.0;
+    double t0 = 0.0, t1 = 0.0, time = 0.0;
+    double timetot = 0.0;
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
@@ -85,9 +86,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm_split(gridComm, coords[1], coords[0], &colComm);
 
     // Start timing
-    if (rank == 0) {
-        startTime = MPI_Wtime();
-    }
+    t0 = MPI_Wtime();
 
     int step;
     int root;
@@ -114,9 +113,11 @@ int main(int argc, char* argv[]) {
     }
 
     // Stop timing and print result
+    t1 = MPI_Wtime();
+    time = t1 - t0;
+    MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) {
-        endTime = MPI_Wtime();
-        printf("Total time: %f seconds\n\n", endTime - startTime);
+        printf("Total time: %f seconds\n\n", timetot);
     }
 
     // TODO: Gather results at root see if we need it
