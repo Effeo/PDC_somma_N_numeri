@@ -1,0 +1,104 @@
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+-----------------------------------
+PBS: qsub is running on ui-studenti.scope.unina.it
+PBS: originating queue is studenti
+PBS: executing queue is studenti
+PBS: working directory is /homes/DMA/PDC/2024/RLNFNC02R/Progetto3
+PBS: execution mode is PBS_BATCH
+PBS: job identifier is 4020809.torque02.scope.unina.it
+PBS: job name is Progetto3
+PBS: node file is /var/spool/pbs/aux//4020809.torque02.scope.unina.it
+PBS: current home directory is /homes/DMA/PDC/2024/RLNFNC02R
+PBS: PATH = /usr/lib64/openmpi/1.2.7-gcc/bin:/usr/kerberos/bin:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/mpirt/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64_mic:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/debugger/gui/intel64:/opt/d-cache/srm/bin:/opt/d-cache/dcap/bin:/opt/edg/bin:/opt/glite/bin:/opt/globus/bin:/opt/lcg/bin:/usr/local/bin:/bin:/usr/bin:/opt/exp_soft/HADOOP/hadoop-1.0.3/bin:/opt/exp_soft/unina.it/intel/composerxe/bin/intel64/:/opt/exp_soft/unina.it/MPJExpress/mpj-v0_38/bin:/homes/DMA/PDC/2024/RLNFNC02R/bin
+-----------------------------------
+Running with matrix size 4 and 1 processors
+Total time: 0.000037 seconds
+
+-----------------------------------
+Running with matrix size 4 and 4 processors
+Total time: 0.000052 seconds
+
+-----------------------------------
+Running with matrix size 8 and 1 processors
+Total time: 0.000034 seconds
+
+-----------------------------------
+Running with matrix size 8 and 4 processors
+Total time: 0.000043 seconds
+
+-----------------------------------
+Running with matrix size 12 and 1 processors
+Total time: 0.000039 seconds
+
+-----------------------------------
+Running with matrix size 12 and 4 processors
+Total time: 0.000045 seconds
+
+-----------------------------------
+Running with matrix size 16 and 1 processors
+Total time: 0.000042 seconds
+
+-----------------------------------
+Running with matrix size 16 and 4 processors
+Total time: 0.000053 seconds
+
+-----------------------------------
+Running with matrix size 20 and 1 processors
+Total time: 0.000054 seconds
+
+-----------------------------------
+Running with matrix size 20 and 4 processors
+Total time: 0.000069 seconds
+
+-----------------------------------
+Running with matrix size 24 and 1 processors
+Total time: 0.000074 seconds
+
+-----------------------------------
+Running with matrix size 24 and 4 processors
+Total time: 0.000078 seconds
+
+-----------------------------------
+Running with matrix size 28 and 1 processors
+Total time: 0.000093 seconds
+
+-----------------------------------
+Running with matrix size 28 and 4 processors
+Total time: 0.000068 seconds
+
+-----------------------------------
+Running with matrix size 32 and 1 processors
+Total time: 0.000133 seconds
+
+-----------------------------------
+Running with matrix size 32 and 4 processors
+Total time: 0.000125 seconds
+
+-----------------------------------
+Running with matrix size 36 and 1 processors
+Total time: 0.000169 seconds
+
+-----------------------------------
+Running with matrix size 36 and 4 processors
+Total time: 0.000125 seconds
+
+-----------------------------------
+Running with matrix size 40 and 1 processors
+Total time: 0.000217 seconds
+
+-----------------------------------
+Running with matrix size 40 and 4 processors
+Total time: 0.000145 seconds
+
+-----------------------------------
+Running with matrix size 80 and 1 processors
+Total time: 0.001750 seconds
+
+-----------------------------------
+Running with matrix size 80 and 4 processors
+Total time: 0.000526 seconds
+
+-----------------------------------

@@ -1,0 +1,48 @@
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+wn280.scope.unina.it
+-----------------------------------
+PBS: qsub is running on ui-studenti.scope.unina.it
+PBS: originating queue is studenti
+PBS: executing queue is studenti
+PBS: working directory is /homes/DMA/PDC/2024/RLNFNC02R/Progetto3
+PBS: execution mode is PBS_BATCH
+PBS: job identifier is 4019831.torque02.scope.unina.it
+PBS: job name is Progetto3
+PBS: node file is /var/spool/pbs/aux//4019831.torque02.scope.unina.it
+PBS: current home directory is /homes/DMA/PDC/2024/RLNFNC02R
+PBS: PATH = /usr/lib64/openmpi/1.2.7-gcc/bin:/usr/kerberos/bin:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/mpirt/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/bin/intel64_mic:/opt/exp_soft/unina.it/intel/composer_xe_2013_sp1.3.174/debugger/gui/intel64:/opt/d-cache/srm/bin:/opt/d-cache/dcap/bin:/opt/edg/bin:/opt/glite/bin:/opt/globus/bin:/opt/lcg/bin:/usr/local/bin:/bin:/usr/bin:/opt/exp_soft/HADOOP/hadoop-1.0.3/bin:/opt/exp_soft/unina.it/intel/composerxe/bin/intel64/:/opt/exp_soft/unina.it/MPJExpress/mpj-v0_38/bin:/homes/DMA/PDC/2024/RLNFNC02R/bin
+-----------------------------------
+Running with matrix size 100 and 1 processors
+Total time: 0.003183 seconds
+
+-----------------------------------
+Running with matrix size 100 and 4 processors
+Total time: 0.000712 seconds
+
+-----------------------------------
+Running with matrix size 500 and 1 processors
+Total time: 0.346667 seconds
+
+-----------------------------------
+Running with matrix size 500 and 4 processors
+Total time: 0.130989 seconds
+
+-----------------------------------
+Running with matrix size 1000 and 1 processors
+Total time: 5.626958 seconds
+
+-----------------------------------
+Running with matrix size 1000 and 4 processors
+Total time: 1.028714 seconds
+
+-----------------------------------
+Running with matrix size 2000 and 1 processors
+Total time: 54.699814 seconds
+
+-----------------------------------
+Running with matrix size 2000 and 4 processors
+Total time: 16.398171 seconds
+
+-----------------------------------

@@ -1,0 +1,220 @@
+#include <mpi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+void initializeMatrix(int* matrix, int size) {
+    int i;
+    for (i = 0; i < size * size; ++i) {
+        matrix[i] = i + 1; // Initialize with values starting from 1
+    }
+}
+
+void matrixMultiply(int* A, int* B, int* C, int blockSize) {
+    int i, j, k;
+    for (i = 0; i < blockSize; ++i) {
+        for (j = 0; j < blockSize; ++j) {
+            for (k = 0; k < blockSize; ++k) {
+                C[i * blockSize + j] += A[i * blockSize + k] * B[k * blockSize + j];
+            }
+        }
+    }
+}
+
+/*void sumMatrix(int* A, int* B, int blockSize) {
+    int i, j;
+    for (i = 0; i < blockSize; ++i) {
+        for (j = 0; j < blockSize; ++j) {
+            A[i * blockSize + j] += B[i * blockSize + j];
+            B[i * blockSize + j] = 0;
+        }
+    }
+}*/
+
+int main(int argc, char* argv[]) {
+    int rank, nProcessors, matrixSize, blockSize;
+    double t0, t1, time, timetot;
+    int *fullA, *fullB, *A, *B, *C, *finalMatrix;
+    int i, j;
+
+    if (argc < 2) {
+        printf("Specify the matrix's size\n");
+        return EXIT_FAILURE;
+    }
+
+    matrixSize = atoi(argv[1]);
+    if (matrixSize < 1) {
+        printf("Matrix size must be greater than 0\n");
+        return EXIT_FAILURE;
+    }
+
+    fullA = (int*)malloc(matrixSize * matrixSize * sizeof(int));
+    fullB = (int*)malloc(matrixSize * matrixSize * sizeof(int));
+
+    if( fullA == NULL || fullB == NULL){
+        printf("Error allocating memory for fullA or fullB\n");
+        return EXIT_FAILURE;
+    }
+
+    initializeMatrix(fullA, matrixSize);
+    initializeMatrix(fullB, matrixSize);
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
+
+    int p = sqrt(nProcessors);
+    if (matrixSize % p != 0 || nProcessors != p * p) {
+        if (rank == 0) {
+            printf("Matrix size must be a multiple of the square root of the number of processors and processors must be a perfect square.\n");
+        }
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+
+    blockSize = matrixSize / p;
+    A = (int*)malloc(blockSize * blockSize * sizeof(int));
+    B = (int*)malloc(blockSize * blockSize * sizeof(int));
+    C = (int*)calloc(blockSize * blockSize, sizeof(int));
+
+    if( A == NULL || B == NULL || C == NULL){
+        printf("Error allocating memory for A, B or C\n");
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+
+    int dims[2] = {p, p};
+    int periods[2] = {0, 0};
+    int coords[2];
+    int subCoords[2];
+
+    MPI_Comm gridComm;
+    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, 1, &gridComm);
+    MPI_Cart_coords(gridComm, rank, 2, coords);
+
+    subCoords[0] = 0;
+    subCoords[1] = 1;
+    MPI_Comm rowComm;
+    MPI_Cart_sub(gridComm, subCoords, &rowComm);
+    
+    subCoords[0] = 1;
+    subCoords[1] = 0;
+    MPI_Comm colComm;
+    MPI_Cart_sub(gridComm, subCoords, &colComm);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime(); // Start timing
+    
+    int startRow = coords[0] * blockSize;
+    int startCol = coords[1] * blockSize;
+    for (i = 0; i < blockSize; ++i) {
+        for (j = 0; j < blockSize; ++j) {
+            A[i * blockSize + j] = fullA[(startRow + i) * matrixSize + (startCol + j)];
+            B[i * blockSize + j] = fullB[(startRow + i) * matrixSize + (startCol + j)];
+        }
+    }
+    
+    int step;
+    int* AToBeBroadcasted = (int*)malloc(blockSize * blockSize * sizeof(int));
+    if( AToBeBroadcasted == NULL){
+        printf("Error allocating memory for AToBeBroadcasted\n");
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+    int root, destination, source;
+    for (step = 0; step < dims[0]; ++step) {
+        // Broadcast A
+        root = (coords[0] + step) % p;
+        if(root == coords[1]){
+            AToBeBroadcasted = A;
+        }
+
+        MPI_Bcast(AToBeBroadcasted, blockSize * blockSize, MPI_INT, root, rowComm);
+
+        // Multiply A and B
+        matrixMultiply(AToBeBroadcasted, B, C, blockSize);
+
+        // Roll B
+        destination = (coords[0] - 1 + p) % p;
+        source = (coords[0] + 1) % p;
+        MPI_Sendrecv_replace(B, blockSize * blockSize, MPI_INT, destination, 0, source, 0, colComm, MPI_STATUS_IGNORE);
+    }
+    free(AToBeBroadcasted);
+
+    // Gather the final result at the master processor and print
+    finalMatrix = (int*)malloc(matrixSize * matrixSize * sizeof(int));
+    if( finalMatrix == NULL){
+        printf("Error allocating memory for finalMatrix\n");
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+    MPI_Gather(C, blockSize * blockSize, MPI_INT, finalMatrix, blockSize * blockSize, MPI_INT, 0, MPI_COMM_WORLD);
+
+    t1 = MPI_Wtime(); // Stop timing
+    time = t1 - t0;
+    MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    
+    if (rank == 0) {
+        /*printf("Final result matrix:\n");
+        for (i = 0; i < matrixSize; ++i) {
+            for (j = 0; j < matrixSize; ++j) {
+                printf("%d\t", finalMatrix[i * matrixSize + j]);
+            }
+            printf("\n");
+        }
+        free(finalMatrix);*/
+        
+        printf("Total time: %f seconds\n\n", timetot);
+    }
+
+    MPI_Finalize();
+    return 0;
+}
+
+
+/*
+    int step;
+    int gridRank; 
+    MPI_Request request;
+
+    for (step = 0; step < p; ++step) {
+        int coordsToSend[2] = {coords[0], step};
+        
+        MPI_Cart_rank(gridComm, coordsToSend, &gridRank);
+        if (gridRank != rank){
+            MPI_Isend(A, blockSize * blockSize, MPI_INT, gridRank, 0, gridComm, &request);
+        }
+        
+        coordsToSend[0] = step;
+        coordsToSend[1] = coords[1];
+        MPI_Cart_rank(gridComm, coordsToSend, &gridRank);
+        if (gridRank != rank){
+            MPI_Isend(B, blockSize * blockSize, MPI_INT, gridRank, 1, gridComm, &request); 
+        }
+    }
+
+    matrixMultiply(A, B, C, blockSize);
+    
+    int* newC = (int*)calloc(blockSize * blockSize, sizeof(int));
+    for (step = 0; step < p; ++step) {
+        int coordsToRecv[2] = {coords[0], step};
+        MPI_Cart_rank(gridComm, coordsToRecv, &gridRank);
+        if (gridRank != rank) {
+            MPI_Irecv(A, blockSize * blockSize, MPI_INT, gridRank, 0, gridComm, &request);
+        }
+
+        coordsToRecv[0] = step;
+        coordsToRecv[1] = coords[1];
+        MPI_Cart_rank(gridComm, coordsToRecv, &gridRank);
+        if (gridRank != rank){
+            MPI_Irecv(B, blockSize * blockSize, MPI_INT, gridRank, 1, gridComm, &request);
+            matrixMultiply(A, B, newC, blockSize);
+            for(i = 0; i < blockSize * blockSize; ++i){
+                printf("[%d] A[%d] = %d\n", rank, i, A[i]);
+                printf("[%d] B[%d] = %d\n", rank, i, B[i]);
+            }
+            sumMatrix(C, newC, blockSize);
+        }    
+    }
+
+    */
