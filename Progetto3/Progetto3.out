@@ -102,3 +102,35 @@ Running with matrix size 80 and 4 processors
 Total time: 0.000526 seconds
 
 -----------------------------------
+Running with matrix size 100 and 1 processors
+Total time: 0.003366 seconds
+
+-----------------------------------
+Running with matrix size 100 and 4 processors
+Total time: 0.000935 seconds
+
+-----------------------------------
+Running with matrix size 500 and 1 processors
+Total time: 0.353588 seconds
+
+-----------------------------------
+Running with matrix size 500 and 4 processors
+Total time: 0.092044 seconds
+
+-----------------------------------
+Running with matrix size 1000 and 1 processors
+Total time: 6.162089 seconds
+
+-----------------------------------
+Running with matrix size 1000 and 4 processors
+Total time: 0.701877 seconds
+
+-----------------------------------
+Running with matrix size 2000 and 1 processors
+Total time: 54.786404 seconds
+
+-----------------------------------
+Running with matrix size 2000 and 4 processors
+Total time: 11.288920 seconds
+
+-----------------------------------

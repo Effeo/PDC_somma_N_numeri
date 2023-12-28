@@ -27,7 +27,7 @@ export PSC_OMP_AFFINITY=TRUE
 
 mpicc -o $PBS_O_WORKDIR/Progetto3 $PBS_O_WORKDIR/main.c -lm
 
-for matrix_size in 4 8 12 16 20 24 28 32 36 40 80; do
+for matrix_size in 4 8 12 16 20 24 28 32 36 40 80 100 500 1000 2000; do
     for num_procs in 1 4; do
         echo "Running with matrix size $matrix_size and $num_procs processors"
         mpirun -np $num_procs --machinefile $PBS_NODEFILE $PBS_O_WORKDIR/Progetto3 $matrix_size
