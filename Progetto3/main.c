@@ -6,7 +6,7 @@
 void initializeMatrix(int* matrix, int size) {
     int i;
     for (i = 0; i < size * size; ++i) {
-        matrix[i] = i + 1; // Initialize with values starting from 1
+        matrix[i] = i + 1;
     }
 }
 
@@ -20,16 +20,6 @@ void matrixMultiply(int* A, int* B, int* C, int blockSize) {
         }
     }
 }
-
-/*void sumMatrix(int* A, int* B, int blockSize) {
-    int i, j;
-    for (i = 0; i < blockSize; ++i) {
-        for (j = 0; j < blockSize; ++j) {
-            A[i * blockSize + j] += B[i * blockSize + j];
-            B[i * blockSize + j] = 0;
-        }
-    }
-}*/
 
 int main(int argc, char* argv[]) {
     int rank, nProcessors, matrixSize, blockSize;
@@ -103,7 +93,7 @@ int main(int argc, char* argv[]) {
     MPI_Cart_sub(gridComm, subCoords, &colComm);
 
     MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime(); // Start timing
+    t0 = MPI_Wtime();
     
     int startRow = coords[0] * blockSize;
     int startCol = coords[1] * blockSize;
@@ -121,6 +111,7 @@ int main(int argc, char* argv[]) {
         MPI_Finalize();
         return EXIT_FAILURE;
     }
+    
     int root, destination, source;
     for (step = 0; step < dims[0]; ++step) {
         // Broadcast A
@@ -141,80 +132,14 @@ int main(int argc, char* argv[]) {
     }
     free(AToBeBroadcasted);
 
-    // Gather the final result at the master processor and print
-    finalMatrix = (int*)malloc(matrixSize * matrixSize * sizeof(int));
-    if( finalMatrix == NULL){
-        printf("Error allocating memory for finalMatrix\n");
-        MPI_Finalize();
-        return EXIT_FAILURE;
-    }
-    MPI_Gather(C, blockSize * blockSize, MPI_INT, finalMatrix, blockSize * blockSize, MPI_INT, 0, MPI_COMM_WORLD);
-
-    t1 = MPI_Wtime(); // Stop timing
+    t1 = MPI_Wtime();
     time = t1 - t0;
     MPI_Reduce(&time, &timetot, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     
     if (rank == 0) {
-        /*printf("Final result matrix:\n");
-        for (i = 0; i < matrixSize; ++i) {
-            for (j = 0; j < matrixSize; ++j) {
-                printf("%d\t", finalMatrix[i * matrixSize + j]);
-            }
-            printf("\n");
-        }
-        free(finalMatrix);*/
-        
         printf("Total time: %f seconds\n\n", timetot);
     }
 
     MPI_Finalize();
     return 0;
 }
-
-
-/*
-    int step;
-    int gridRank; 
-    MPI_Request request;
-
-    for (step = 0; step < p; ++step) {
-        int coordsToSend[2] = {coords[0], step};
-        
-        MPI_Cart_rank(gridComm, coordsToSend, &gridRank);
-        if (gridRank != rank){
-            MPI_Isend(A, blockSize * blockSize, MPI_INT, gridRank, 0, gridComm, &request);
-        }
-        
-        coordsToSend[0] = step;
-        coordsToSend[1] = coords[1];
-        MPI_Cart_rank(gridComm, coordsToSend, &gridRank);
-        if (gridRank != rank){
-            MPI_Isend(B, blockSize * blockSize, MPI_INT, gridRank, 1, gridComm, &request); 
-        }
-    }
-
-    matrixMultiply(A, B, C, blockSize);
-    
-    int* newC = (int*)calloc(blockSize * blockSize, sizeof(int));
-    for (step = 0; step < p; ++step) {
-        int coordsToRecv[2] = {coords[0], step};
-        MPI_Cart_rank(gridComm, coordsToRecv, &gridRank);
-        if (gridRank != rank) {
-            MPI_Irecv(A, blockSize * blockSize, MPI_INT, gridRank, 0, gridComm, &request);
-        }
-
-        coordsToRecv[0] = step;
-        coordsToRecv[1] = coords[1];
-        MPI_Cart_rank(gridComm, coordsToRecv, &gridRank);
-        if (gridRank != rank){
-            MPI_Irecv(B, blockSize * blockSize, MPI_INT, gridRank, 1, gridComm, &request);
-            matrixMultiply(A, B, newC, blockSize);
-            for(i = 0; i < blockSize * blockSize; ++i){
-                printf("[%d] A[%d] = %d\n", rank, i, A[i]);
-                printf("[%d] B[%d] = %d\n", rank, i, B[i]);
-            }
-            sumMatrix(C, newC, blockSize);
-        }    
-    }
-
-    */
