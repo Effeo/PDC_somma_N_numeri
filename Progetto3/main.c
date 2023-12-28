@@ -53,6 +53,14 @@ int main(int argc, char* argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &nProcessors);
 
+    if (nProcessors != 1 || nProcessors != 4) {
+        if (rank == 0) {
+            printf("Number of processors must be 1 or 4\n");
+        }
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+    
     int p = sqrt(nProcessors);
     if (matrixSize % p != 0 || nProcessors != p * p) {
         if (rank == 0) {
@@ -111,7 +119,7 @@ int main(int argc, char* argv[]) {
         MPI_Finalize();
         return EXIT_FAILURE;
     }
-    
+
     int root, destination, source;
     for (step = 0; step < dims[0]; ++step) {
         // Broadcast A
